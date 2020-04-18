@@ -1,0 +1,389 @@
+fileFormatVersion: 2
+guid: 65d3eba822392e14f881a609ac9f0d07
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7379232614004551529
+    second: lab_walls_0
+  - first:
+      213: -8729654151641679247
+    second: lab_walls_1
+  - first:
+      213: 2214852534313690394
+    second: lab_walls_2
+  - first:
+      213: -3592192855886908470
+    second: lab_walls_3
+  - first:
+      213: 4754770727735596302
+    second: lab_walls_4
+  - first:
+      213: -1824960857901394597
+    second: lab_walls_5
+  - first:
+      213: -7701764811768497868
+    second: lab_walls_6
+  - first:
+      213: -1137293038915458875
+    second: lab_walls_0
+  - first:
+      213: -3970851399074883450
+    second: lab_walls_1
+  - first:
+      213: 3705833100694882354
+    second: lab_walls_2
+  - first:
+      213: 7900028609575105544
+    second: lab_walls_3
+  - first:
+      213: 2450896516115671528
+    second: lab_walls_4
+  - first:
+      213: 5318573656366460505
+    second: lab_walls_5
+  - first:
+      213: -2325481745574676826
+    second: lab_walls_6
+  - first:
+      213: 5663211757160367693
+    second: lab_walls_7
+  - first:
+      213: -6276152882654208209
+    second: lab_walls_8
+  - first:
+      213: -4310612371985686935
+    second: lab_walls_9
+  - first:
+      213: -8725184815837784429
+    second: lab_walls_10
+  - first:
+      213: 5602117088629877568
+    second: lab_walls_11
+  - first:
+      213: -8740645632490030939
+    second: lab_walls_12
+  - first:
+      213: -8883387423858873335
+    second: lab_walls_13
+  - first:
+      213: -904038136342701250
+    second: lab_walls_14
+  - first:
+      213: -601963702287179114
+    second: lab_walls_15
+  - first:
+      213: 5653031490619033970
+    second: lab_walls_16
+  - first:
+      213: 9190100758238860773
+    second: lab_walls_17
+  - first:
+      213: -906168985364611601
+    second: lab_walls_18
+  - first:
+      213: -7927652135576634961
+    second: lab_walls_19
+  - first:
+      213: 4053070529262788039
+    second: lab_walls_20
+  - first:
+      213: 732055175679356266
+    second: lab_walls_21
+  - first:
+      213: 8476705802632229808
+    second: lab_walls_22
+  - first:
+      213: 710327718382744222
+    second: lab_walls_23
+  - first:
+      213: 4696758506108817506
+    second: lab_walls_24
+  - first:
+      213: -6375576566148506976
+    second: lab_walls_25
+  - first:
+      213: 413299532786216745
+    second: lab_walls_26
+  - first:
+      213: 7193682496607029310
+    second: lab_walls_27
+  - first:
+      213: -3218672485553466622
+    second: lab_walls_28
+  - first:
+      213: 9211974539362984469
+    second: lab_walls_29
+  - first:
+      213: 6906271741059823771
+    second: lab_walls_30
+  - first:
+      213: -7418573887784002110
+    second: lab_walls_31
+  - first:
+      213: 3006718316815788973
+    second: lab_walls_32
+  - first:
+      213: 4203179773499774480
+    second: lab_walls_33
+  - first:
+      213: 8579563923615314838
+    second: lab_walls_34
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: lab_walls_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c86be9b1068730f0800000000000000
+      internalID: -1137293038915458875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6885746e0b3b4e8c0800000000000000
+      internalID: -3970851399074883450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2388dcb1293cd6330800000000000000
+      internalID: 3705833100694882354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 804b52d0a2a82ad60800000000000000
+      internalID: 7900028609575105544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e921506565530220800000000000000
+      internalID: 2450896516115671528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95e297bbf8e5fc940800000000000000
+      internalID: 5318573656366460505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_walls_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a6bd5f5caa3abfd0800000000000000
+      internalID: -2325481745574676826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
