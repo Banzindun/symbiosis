@@ -7,4 +7,5 @@ public abstract class CustomMonoBehaviour : MonoBehaviour
     public abstract void OnEnemyAttack();
     public abstract void OnEnemyMove();
     public abstract void OnTurnEnd();
+    public abstract void OnAnimationEvent(string name);
 }

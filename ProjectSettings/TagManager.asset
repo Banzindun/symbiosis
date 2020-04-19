@@ -14,8 +14,8 @@ TagManager:
   - 
   - 
   - Obstacles
-  - 
-  - 
+  - Enemies
+  - Player
   - 
   - 
   - 
@@ -40,6 +40,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Wals
+    uniqueID: 1829035155
     locked: 0
   - name: Obstacles
     uniqueID: 2388931149

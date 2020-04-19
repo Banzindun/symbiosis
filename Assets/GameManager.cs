@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,22 +11,66 @@ public class GameManager : MonoBehaviour
         OTHER,
         PLAYER_TURN,
         ENEMY_ATTACK,
-        ENEMY_MOVE
+        ENEMY_MOVE,
+        PAUSED
     }
 
+    [SerializeField] private static bool loading;
+
     [SerializeField]
-    private GameState state;
+    public GameState state;
+    private GameState lastState;
 
     private static GameManager instance;
     public static GameManager Instance => instance;
 
     private List<CustomMonoBehaviour> enemyBehaviours = new List<CustomMonoBehaviour>();
-
     public List<CustomMonoBehaviour> EnemyBehaviours => enemyBehaviours;
-
+    private Dictionary<Vector3Int, int> attackedTiles = new Dictionary<Vector3Int, int>();
     public CustomMonoBehaviour playerBehaviour;
 
     private int handledEnemyIndex = 0;
+
+    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject ui;
+    [SerializeField] private GameObject dialog;
+    [SerializeField] private GameObject gameOver;
+
+    [SerializeField] private int currentLevelIndex;
+
+    [SerializeField] private Level[] levels;
+
+    public void AddAttackedTile(Vector3Int tile)
+    {
+        int count = 0;
+        if (attackedTiles.ContainsKey(tile))
+        {
+            count = attackedTiles[tile];
+        }
+
+        attackedTiles[tile] = count + 1;
+    }
+
+    public bool RemoveAttackedTile(Vector3Int tile)
+    {
+        int count = 0;
+        if (attackedTiles.ContainsKey(tile))
+        {
+            count = attackedTiles[tile];
+        }
+
+        if (count <= 1)
+        {
+            return attackedTiles.Remove(tile);
+        }
+        else
+        {
+            attackedTiles[tile] = count - 1;
+        }
+
+        return false;
+    }
 
     public void RegisterEnemy(CustomMonoBehaviour enemy)
     {
@@ -43,26 +88,129 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
         }
+
+
+        dialog.SetActive(true);
+        ui.SetActive(true);
+
+        if (!loading)
+        {
+            mainMenu.SetActive(true);
+        }
         else
         {
-            Destroy(gameObject);
-            return;
+            StartGame();
         }
     }
 
     [SerializeField]
     private int turnNumber;
 
+    public void StartGame()
+    {
+        currentLevelIndex = 0;
+
+
+        mainMenu.SetActive(false);
+        pauseMenu.SetActive(false);
+        dialog.SetActive(false);
+        ui.SetActive(true);
+
+        Unpause();
+        if (loading)
+        {
+            // Postpone the load after we have the player etc.
+        }
+        else
+        {
+            StartTurn();
+        }
+
+
+    }
+
+    public void ToggleUI()
+    {
+        if (ui.active)
+        {
+            ui.SetActive(false);
+        }
+        else
+        {
+            ui.SetActive(true);
+        }
+    }
+
+    public void ResetGame()
+    {
+        enemyBehaviours.Clear();
+        attackedTiles.Clear();
+        playerBehaviour = null;
+        handledEnemyIndex = 0;
+    }
+
+    public void RestartGame()
+    {
+        loading = true;
+        SceneManager.LoadScene("GameScene");
+    }
+
+    public void NextLevel()
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        StartTurn();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (loading && playerBehaviour != null)
+        {
+            StartTurn();
+            loading = false;
+        }
 
+        if (!mainMenu.active && !dialog.active)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                TogglePause();
+            }
+        }
+    }
+
+
+    public void TogglePause()
+    {
+        if (state == GameState.PAUSED)
+        {
+            Unpause();
+            pauseMenu.SetActive(false);
+        }
+        else
+        {
+            Pause();
+            pauseMenu.SetActive(true);
+        }
+    }
+
+    public void Pause()
+    {
+        lastState = state;
+        state = GameState.PAUSED;
+
+        Time.timeScale = 0;
+    }
+
+    public void Unpause()
+    {
+        state = lastState;
+        Time.timeScale = 1;
     }
 
     public void StartTurn()
@@ -75,7 +223,10 @@ public class GameManager : MonoBehaviour
 
         foreach (CustomMonoBehaviour enemy in enemyBehaviours)
         {
-            enemy.OnTurnStart();
+            if (enemy.enabled)
+            {
+                enemy.OnTurnStart();
+            }
         }
 
         StartPlayerTurn();
@@ -91,7 +242,10 @@ public class GameManager : MonoBehaviour
 
         foreach (CustomMonoBehaviour enemy in enemyBehaviours)
         {
-            enemy.OnPlayerTurn();
+            if (enemy.enabled)
+            {
+                enemy.OnPlayerTurn();
+            }
         }
     }
 
@@ -124,13 +278,28 @@ public class GameManager : MonoBehaviour
     private void DoEnemyAttack()
     {
         CustomMonoBehaviour enemy = enemyBehaviours[handledEnemyIndex];
-        enemy.OnEnemyAttack();
+
+        if (enemy.enabled)
+        {
+            enemy.OnEnemyAttack();
+            return;
+        }
+
+        // If not enabled we just end the turn
+        OnEnemyTurnEnd();
     }
 
     private void DoEnemyMove()
     {
         CustomMonoBehaviour enemy = enemyBehaviours[handledEnemyIndex];
-        enemy.OnEnemyMove();
+        if (enemy.enabled)
+        {
+            enemy.OnEnemyMove();
+            return;
+        }
+
+        // If not enabled we just end the turn
+        OnEnemyTurnEnd();
     }
 
     public void OnEnemyTurnEnd()
@@ -179,15 +348,18 @@ public class GameManager : MonoBehaviour
 
         foreach (CustomMonoBehaviour enemy in enemyBehaviours)
         {
-            enemy.OnTurnEnd();
+            if (enemy.enabled)
+            {
+                enemy.OnTurnEnd();
+            }
         }
 
         StartTurn();
-
     }
 
     public void PlayerDied()
     {
-
+        Pause();
+        gameOver.SetActive(true);
     }
 }

@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
     public delegate void DeathDelegate();
     public DeathDelegate OnDeathDelegate;
 
+    [SerializeField]
     private float currentValue;
 
     public float CurrentValue

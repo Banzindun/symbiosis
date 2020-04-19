@@ -48,9 +48,10 @@ public class CameraController : MonoBehaviour
         verticalMax = max.y - vertExtent;
         verticalMin = min.y + vertExtent;
 
-        var pos = new Vector3(target.position.x, target.position.y, transform.position.z);
+        var pos = new Vector3(target.position.x, target.position.y - 2, transform.position.z);
         pos.x = Mathf.Clamp(pos.x, horizontalMin, horizontalMax);
         pos.y = Mathf.Clamp(pos.y, verticalMin, verticalMax);
         transform.position = pos;
+
     }
 }

@@ -25,7 +25,7 @@ public class PlayerController : CustomMonoBehaviour
     void Start()
     {
         movementPoint.parent = null;
-        GetComponent<Health>().OnDeathDelegate += OnDeath;
+        GetComponent<PlayerHealth>().OnDeathDelegate += OnDeath;
         GameManager.Instance.playerBehaviour = this;
     }
 
@@ -60,15 +60,12 @@ public class PlayerController : CustomMonoBehaviour
 
     }
 
-
-
-
     // Update is called once per frame
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, movementPoint.position, moveSpeed * Time.deltaTime);
 
-        if (!isPlayerTurn)
+        if (!isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
         {
             return;
         }
@@ -128,7 +125,16 @@ public class PlayerController : CustomMonoBehaviour
 
     public void OnDeath()
     {
-        GameManager.Instance.PlayerDied();
         animator.SetTrigger("Die");
+    }
+
+    public override void OnAnimationEvent(string name)
+    {
+        switch (name)
+        {
+            case "Died":
+                GameManager.Instance.PlayerDied();
+                break;
+        }
     }
 }
