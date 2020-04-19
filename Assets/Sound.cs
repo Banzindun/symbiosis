@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -6,6 +5,19 @@ using UnityEngine.Audio;
 public struct Sound
 {
     public AudioClip AudioClip;
+
+    public AudioClip[] other;
+
+    public AudioClip GetClip()
+    {
+        if (other.Length > 0)
+        {
+            int choice = Random.Range(0, other.Length);
+            return other[choice];
+        }
+
+        return AudioClip;
+    }
 
     public AudioMixerGroup AudioMixerGroup;
 

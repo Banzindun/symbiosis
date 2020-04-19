@@ -42,12 +42,19 @@ public class MusicManager : MonoBehaviour
     public void Play(string songName)
     {
         Sound sound = Array.Find(sounds, s => s.Name == songName);
+
+        if (sound.Source == null)
+        {
+            Debug.LogError("Unknown song name: " + songName);
+            return;
+        }
+
+        sound.Source.clip = sound.GetClip();
         sound.Source.Play();
     }
 
     private void Start()
     {
         Play("BackgroundMusic");
-        Play("BackgroundEffect");
     }
 }

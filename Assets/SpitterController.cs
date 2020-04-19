@@ -111,4 +111,14 @@ public class SpitterController : MonsterController
             isMyTurn = false;
         }
     }
+
+    protected override void _OnDeath()
+    {
+        MusicManager.Instance.Play("SpitterDeath");
+    }
+
+    protected override void _OnDamage()
+    {
+        MusicManager.Instance.Play("SpitterAttack");
+    }
 }

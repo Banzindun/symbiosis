@@ -100,4 +100,14 @@ public class TankController : MonsterController
 
         attackedIiles = new List<Vector3Int>();
     }
+
+    protected override void _OnDeath()
+    {
+        MusicManager.Instance.Play("TankDeath");
+    }
+
+    protected override void _OnDamage()
+    {
+        MusicManager.Instance.Play("TankAttack");
+    }
 }

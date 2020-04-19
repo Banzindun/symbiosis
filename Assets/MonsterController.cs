@@ -352,18 +352,22 @@ public abstract class MonsterController : CustomMonoBehaviour
         Debug.Log("Looking for player health on tile " + worldPosition);
         PlayerHealth playerHealth = Utils.GetComponentAtPosition2D<PlayerHealth>(worldPosition);
 
-        if (Vector3.Distance(worldPosition, player.transform.position) < 0.05f)
+        if (playerHealth != null)
         {
-            //PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
             playerHealth.CurrentValue -= damage;
+            animator.SetTrigger("Attack");
+            _OnDamage();
         }
-
     }
 
     public void OnDeath()
     {
         animator.SetTrigger("Die");
+        _OnDeath();
     }
+
+    protected abstract void _OnDeath();
+    protected abstract void _OnDamage();
 
     public override void OnAnimationEvent(string name)
     {
@@ -371,6 +375,8 @@ public abstract class MonsterController : CustomMonoBehaviour
         {
             case "Died":
                 // TODO: Disable collider and make it just lie on the ground
+                break;
+            case "Hit":
                 break;
         }
     }

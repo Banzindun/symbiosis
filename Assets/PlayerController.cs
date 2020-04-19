@@ -1,10 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Toolbox;
 
 public class PlayerController : CustomMonoBehaviour
 {
+    [System.Serializable]
+    public enum ActionType
+    {
+        ATTACK,
+        FEED,
+        SHOOT,
+        BOMB,
+        NONE
+    }
+
     [SerializeField] private Animator animator;
 
     [SerializeField] private float moveSpeed;
@@ -16,6 +27,12 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] GridLayout gridLayout;
 
     [SerializeField] int movesPerTurn = 2;
+
+    [SerializeField] private ActionType performedAction;
+
+    // UI:
+
+    [SerializeField] private Button nextTurnButton;
 
     bool isPlayerTurn;
 
@@ -41,6 +58,7 @@ public class PlayerController : CustomMonoBehaviour
 
     public override void OnPlayerTurn()
     {
+        nextTurnButton.interactable = true;
         isPlayerTurn = true;
         currentMoves = movesPerTurn;
     }
@@ -110,6 +128,22 @@ public class PlayerController : CustomMonoBehaviour
         }
 
         // TODO: Handle other actions
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // TODO: Attack
+        }
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            // TODO: Eat
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            // TODO: Ranged
+        }
+        else if (Input.GetKeyDown(KeyCode.G))
+        {
+            // TODO: Bomb
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -119,8 +153,12 @@ public class PlayerController : CustomMonoBehaviour
 
     public void EndTurn()
     {
-        isPlayerTurn = false;
-        GameManager.Instance.OnPlayerTurnEnd();
+        if (isPlayerTurn)
+        {
+            isPlayerTurn = false;
+            nextTurnButton.interactable = false;
+            GameManager.Instance.OnPlayerTurnEnd();
+        }
     }
 
     public void OnDeath()

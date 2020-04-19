@@ -64,4 +64,14 @@ public class SoldierController : MonsterController
 
         tilePosition = new Vector3Int(-1000, 0, 0);
     }
+
+    protected override void _OnDeath()
+    {
+        MusicManager.Instance.Play("SoldierDeath");
+    }
+
+    protected override void _OnDamage()
+    {
+        MusicManager.Instance.Play("SoldierAttack");
+    }
 }
