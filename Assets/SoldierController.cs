@@ -67,6 +67,12 @@ public class SoldierController : MonsterController
 
     protected override void _OnDeath()
     {
+        if (tilePosition.x != -1000)
+        {
+            ClearTile(tilePosition);
+            tilePosition = new Vector3Int(-1000, 0, 0);
+        }
+
         MusicManager.Instance.Play("SoldierDeath");
     }
 

@@ -8,7 +8,7 @@ public class SpitterController : MonsterController
 {
     [SerializeField] private float range;
 
-    private List<Vector3Int> attackedIiles = new List<Vector3Int>();
+    private List<Vector3Int> attackedTiles = new List<Vector3Int>();
 
     protected override void ScheduleAction()
     {
@@ -81,7 +81,7 @@ public class SpitterController : MonsterController
             groundTilemap.SetTileFlags(tilePosition, TileFlags.None);
             groundTilemap.SetColor(tilePosition, attackColor);
 
-            attackedIiles.Add(tilePosition);
+            attackedTiles.Add(tilePosition);
             GameManager.Instance.AddAttackedTile(tilePosition);
         }
     }
@@ -89,12 +89,12 @@ public class SpitterController : MonsterController
 
     protected override void PerformAction()
     {
-        for (int i = 0; i < attackedIiles.Count; i++)
+        for (int i = 0; i < attackedTiles.Count; i++)
         {
-            DoDamageOnTile(attackedIiles[i]);
+            DoDamageOnTile(attackedTiles[i]);
         }
 
-        attackedIiles = new List<Vector3Int>();
+        attackedTiles = new List<Vector3Int>();
     }
 
     protected void Move()
@@ -114,6 +114,12 @@ public class SpitterController : MonsterController
 
     protected override void _OnDeath()
     {
+        for (int i = 0; i < attackedTiles.Count; i++)
+        {
+            ClearTile(attackedTiles[i]);
+        }
+        attackedTiles = new List<Vector3Int>();
+
         MusicManager.Instance.Play("SpitterDeath");
     }
 

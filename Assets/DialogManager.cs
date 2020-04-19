@@ -38,7 +38,7 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    void DisplayDialog()
+    public void DisplayDialog()
     {
         imageAnimator.Rebind();
         imageAnimator.SetBool(dialog.actor.ToString(), true);
@@ -47,7 +47,7 @@ public class DialogManager : MonoBehaviour
         bodyText.text = dialog.text;
     }
 
-    void NextDialog()
+    public void NextDialog()
     {
         dialog = dialog.nextDialog;
 
@@ -60,7 +60,7 @@ public class DialogManager : MonoBehaviour
         DisplayDialog();
     }
 
-    void EndDialog()
+    public void EndDialog()
     {
         gameObject.SetActive(false);
         GameManager.Instance.Unpause();

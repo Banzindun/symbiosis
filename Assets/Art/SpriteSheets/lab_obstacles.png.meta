@@ -11,6 +11,24 @@ TextureImporter:
   - first:
       213: 2989676299777116068
     second: lab_obstacles_2
+  - first:
+      213: 7087897866893683581
+    second: lab_obstacles_0
+  - first:
+      213: -5513714704160409912
+    second: lab_obstacles_1
+  - first:
+      213: -5660140354453335140
+    second: lab_obstacles_2
+  - first:
+      213: 7215510467897258828
+    second: lab_obstacles_3
+  - first:
+      213: 2183526997446270278
+    second: lab_obstacles_4
+  - first:
+      213: 1584696235205567403
+    second: lab_obstacles_5
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -122,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5a7fc1322aa3a2730800000000000000
-      internalID: 3975054089156097957
+      spriteID: d7b62708e854d5260800000000000000
+      internalID: 7087897866893683581
       vertices: []
       indices: 
       edges: []
@@ -143,8 +161,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 94fa161cc5109a430800000000000000
-      internalID: 3794565658929377097
+      spriteID: 8c6bba180b95b73b0800000000000000
+      internalID: -5513714704160409912
       vertices: []
       indices: 
       edges: []
@@ -164,8 +182,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a78e9131c67d7920800000000000000
-      internalID: 2989676299777116068
+      spriteID: c9394f916542371b0800000000000000
+      internalID: -5660140354453335140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_obstacles_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c43f0288a84a22460800000000000000
+      internalID: 7215510467897258828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_obstacles_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64d92404c327d4e10800000000000000
+      internalID: 2183526997446270278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lab_obstacles_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba3a35074d8fdf510800000000000000
+      internalID: 1584696235205567403
       vertices: []
       indices: 
       edges: []

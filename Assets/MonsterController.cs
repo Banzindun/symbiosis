@@ -23,10 +23,14 @@ public abstract class MonsterController : CustomMonoBehaviour
     [SerializeField] protected Color attackColor;
 
     protected CustomMonoBehaviour player;
+    protected BoxCollider2D collider2D;
 
     private Health health;
 
     protected bool isMyTurn;
+
+    public float Nutrition;
+    public float Heal;
 
     protected void OnDestroy()
     {
@@ -75,6 +79,8 @@ public abstract class MonsterController : CustomMonoBehaviour
 
         health = GetComponent<Health>();
         health.OnDeathDelegate += OnDeath;
+
+        collider2D = GetComponent<BoxCollider2D>();
     }
 
     protected void Update()
@@ -360,10 +366,28 @@ public abstract class MonsterController : CustomMonoBehaviour
         }
     }
 
+    protected void ClearTile(Vector3Int tile)
+    {
+        bool removedLast = GameManager.Instance.RemoveAttackedTile(tile);
+
+        if (removedLast)
+        {
+            groundTilemap.SetTileFlags(tile, TileFlags.None);
+            groundTilemap.SetColor(tile, Color.white);
+        }
+    }
+
     public void OnDeath()
     {
         animator.SetTrigger("Die");
+        enabled = false;
         _OnDeath();
+    }
+
+    protected void HandleDeath()
+    {
+        gameObject.layer = 0;
+        //collider2D.enabled = false;
     }
 
     protected abstract void _OnDeath();
@@ -375,6 +399,7 @@ public abstract class MonsterController : CustomMonoBehaviour
         {
             case "Died":
                 // TODO: Disable collider and make it just lie on the ground
+                HandleDeath();
                 break;
             case "Hit":
                 break;

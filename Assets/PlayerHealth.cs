@@ -11,16 +11,18 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     private float currentValue;
 
+    [SerializeField] private Animator animator;
+
     public float CurrentValue
     {
         get { return currentValue; }
         set
         {
-            if (value > 0)
+            if (currentValue < value)
             {
                 OnHeal();
             }
-            else if (value < 0)
+            else if (currentValue > value)
             {
                 OnHit();
             }
@@ -30,6 +32,11 @@ public class PlayerHealth : MonoBehaviour
             if (currentValue <= 0)
             {
                 OnDeath();
+            }
+
+            if (currentValue > 1)
+            {
+                currentValue = 1;
             }
         }
     }
@@ -44,7 +51,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnHit()
     {
-
+        if (animator != null)
+        {
+            animator.SetTrigger("Hit");
+        }
     }
 
     private void OnHeal()

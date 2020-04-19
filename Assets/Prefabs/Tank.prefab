@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3670583647347942036}
   - component: {fileID: 5756453670668883428}
   - component: {fileID: 1915043365}
+  - component: {fileID: 2365630435230389972}
   m_Layer: 9
   m_Name: Tank
   m_TagString: Untagged
@@ -47,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentValue: 0
+  animator: {fileID: 3670583648381499181}
 --- !u!114 &5756453670668883428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,6 +72,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1792
   attackColor: {r: 0.754717, g: 0.20291919, b: 0.20291919, a: 1}
+  Nutrition: 0.05
+  Heal: 0.2
 --- !u!61 &1915043365
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -94,8 +98,29 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.75, y: 0.75}
   m_EdgeRadius: 0
+--- !u!50 &2365630435230389972
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3670583647347942024}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7
 --- !u!1 &3670583648381499183
 GameObject:
   m_ObjectHideFlags: 0
