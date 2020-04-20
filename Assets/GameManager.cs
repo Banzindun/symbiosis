@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     private int handledEnemyIndex = 0;
 
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject introMenu;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject ui;
     [SerializeField] private GameObject dialog;
@@ -110,23 +111,25 @@ public class GameManager : MonoBehaviour
     {
         currentLevelIndex = 0;
 
-
         mainMenu.SetActive(false);
         pauseMenu.SetActive(false);
         dialog.SetActive(false);
         ui.SetActive(true);
 
-        Unpause();
         if (loading)
         {
             // Postpone the load after we have the player etc.
         }
         else
         {
-            StartTurn();
+            introMenu.SetActive(true);
         }
+    }
 
-
+    public void OnIntroFinished()
+    {
+        StartTurn();
+        Unpause();
     }
 
     public void ToggleUI()
@@ -171,7 +174,7 @@ public class GameManager : MonoBehaviour
     {
         if (loading && playerBehaviour != null)
         {
-            StartTurn();
+            OnIntroFinished();
             loading = false;
         }
 

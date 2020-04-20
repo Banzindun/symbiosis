@@ -25,6 +25,11 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] GridLayout gridLayout;
     private PlayerHealth health;
 
+    [SerializeField] private SpriteRenderer upArrow;
+    [SerializeField] private SpriteRenderer downArrow;
+    [SerializeField] private SpriteRenderer leftArrow;
+    [SerializeField] private SpriteRenderer rightArrow;
+
     [Header("Constants:")]
     [SerializeField] private float feastForWinningGame = 0.7f;
     [SerializeField] private float moveSpeed;
@@ -49,10 +54,11 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] private Image feastPointIndicator;
     [SerializeField] private TextMeshProUGUI stepsText;
 
-    [SerializeField] private Button wText;
-    [SerializeField] private Button sText;
-    [SerializeField] private Button aText;
-    [SerializeField] private Button dText;
+    [SerializeField] private Button wButton;
+    [SerializeField] private Button sButton;
+    [SerializeField] private Button aButton;
+    [SerializeField] private Button dButton;
+
 
     [Header("Debug:")]
     [SerializeField] private ActionType performedAction;
@@ -191,17 +197,12 @@ public class PlayerController : CustomMonoBehaviour
 
         if (performedAction == ActionType.NONE)
         {
-            bool movementReceived = false;
             // Handle movement
-            if (Vector3.Distance(transform.position, movementPoint.position) < 0.05f)
-            {
-                movementReceived = HandleMovementInput();
-            }
+            bool movementReceived = HandleMovementInput();
 
             if (movementReceived)
             {
-                inAir = false;
-                animator.SetTrigger("Jump");
+                HandleMovementReceived();
             }
             else
             {
@@ -233,6 +234,12 @@ public class PlayerController : CustomMonoBehaviour
         }
     }
 
+    private void HandleMovementReceived()
+    {
+        inAir = false;
+        animator.SetTrigger("Jump");
+    }
+
     private void UpdateUI()
     {
         attackSlotHolder.Toggle(IsActionAvailable(ActionType.ATTACK));
@@ -250,20 +257,30 @@ public class PlayerController : CustomMonoBehaviour
         feastValue.text = (int)(energy * 100f) + "";
         feastPointIndicator.fillAmount = feastForWinningGame;
 
-        stepsText.text = currentMoves + "";
-
-
-        Vector3Int[] directions = Utils.FourDirections;
-
-        for (int i = 0; i < directions.Length; i++)
+        if (unlimitedMovement)
         {
-            if (!IsMoveAvailable(directions[i]))
-            {
-                // TODO: Mark as unavailable
-                continue;
-            }
+            stepsText.text = "-";
+        }
+        else
+        {
+            stepsText.text = currentMoves + "";
+        }
 
-            // TODO: Mark as available
+        // When selecting action
+        if (performedAction != ActionType.NONE && actionDirection == Vector3.zero)
+        {
+            wButton.interactable = HandleDirectionSelect(new Vector3(0f, 1f, 0f));
+            sButton.interactable = HandleDirectionSelect(new Vector3(0f, -1f, 0f));
+            aButton.interactable = HandleDirectionSelect(new Vector3(-1f, 0f, 0f));
+            dButton.interactable = HandleDirectionSelect(new Vector3(1f, 0f, 0f));
+            actionDirection = Vector3.zero;
+        }
+        else
+        {
+            wButton.interactable = IsMoveAvailable(new Vector3(0f, 1f, 0f));
+            sButton.interactable = IsMoveAvailable(new Vector3(0f, -1f, 0f));
+            aButton.interactable = IsMoveAvailable(new Vector3(-1f, 0f, 0f));
+            dButton.interactable = IsMoveAvailable(new Vector3(1f, 0f, 0f));
         }
     }
 
@@ -316,6 +333,7 @@ public class PlayerController : CustomMonoBehaviour
         if (performedAction == ActionType.NONE)
         {
             MoveHorizontal(horizontal);
+            HandleMovementReceived();
         }
         else if (actionDirection == Vector3.zero)
         {
@@ -342,6 +360,7 @@ public class PlayerController : CustomMonoBehaviour
         if (performedAction == ActionType.NONE)
         {
             MoveVertical(vertical);
+            HandleMovementReceived();
         }
         else if (actionDirection == Vector3.zero)
         {
@@ -364,6 +383,11 @@ public class PlayerController : CustomMonoBehaviour
 
     public bool IsMoveAvailable(Vector3 move)
     {
+        if (currentMoves <= 0 || inAir || !isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
+        {
+            return false;
+        }
+
         return !Physics2D.OverlapCircle(movementPoint.position + move, .2f, collisionLayers);
     }
 
@@ -411,11 +435,11 @@ public class PlayerController : CustomMonoBehaviour
             }
         }
 
-
         // TODO: Show the tooltip 
         ShowDirectionSelectionTooltip();
-    }
 
+        UpdateUI();
+    }
 
 
     private void HandleActionInput()
@@ -482,6 +506,11 @@ public class PlayerController : CustomMonoBehaviour
 
     private bool IsActionAvailable(ActionType type)
     {
+        if (inAir || performingAction || performedAction != ActionType.NONE)
+        {
+            return false;
+        }
+
         switch (type)
         {
             case ActionType.ATTACK:

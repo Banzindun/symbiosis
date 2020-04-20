@@ -23,6 +23,9 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     [SerializeField] protected Color attackColor;
 
+    [SerializeField] private int moves;
+    [SerializeField] private int currentMove;
+
     protected CustomMonoBehaviour player;
     protected BoxCollider2D collider2D;
 
@@ -74,6 +77,7 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     public override void OnEnemyMove()
     {
+        currentMove = moves;
         isMyTurn = true;
         Move();
     }
@@ -116,15 +120,21 @@ public abstract class MonsterController : CustomMonoBehaviour
             if (Vector3.Distance(transform.position, nextPosition) < 0.05f)
             {
                 MoveDone();
-                isMyTurn = false;
             }
         }
     }
 
     protected void MoveDone()
     {
-        ScheduleAction();
-        GameManager.Instance.OnEnemyTurnEnd();
+        if (currentMove <= 0)
+        {
+            ScheduleAction();
+            EndTurn();
+        }
+        else
+        {
+            Move();
+        }
     }
 
 
@@ -165,9 +175,11 @@ public abstract class MonsterController : CustomMonoBehaviour
     protected void Move()
     {
         nextPosition = DoPathfinding(nextPosition);
+        currentMove--;
 
         if (Vector3.Distance(nextPosition, lastPosition) > 0.05f)
         {
+
             inAir = false;
             animator.SetTrigger("Jump");
 
@@ -176,6 +188,11 @@ public abstract class MonsterController : CustomMonoBehaviour
 
             tile = pathfindingTilemap.WorldToCell(nextPosition);
             pathfindingTilemap.SetTile(tile, occupiedTile);
+        }
+        else
+        {
+            currentMove = 0;
+            MoveDone();
         }
 
         lastPosition = transform.position;

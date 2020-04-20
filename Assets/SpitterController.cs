@@ -21,6 +21,8 @@ public class SpitterController : MonsterController
             return;
         }
 
+        Debug.Log("SPITTER: Player in range!");
+
         Vector3 playerPosition = player.transform.position;
 
         Vector3 addition = Vector3.zero;
@@ -41,6 +43,9 @@ public class SpitterController : MonsterController
         {
             addition = new Vector3(-1f, 0, 0);
         }
+
+        Debug.Log("SPITTER: Addition " + addition);
+
         //else
         //{
         //    Vector3[] choices = { new Vector3(1f, 0, 0), new Vector3(0, 1f, 0),
@@ -121,9 +126,8 @@ public class SpitterController : MonsterController
     {
         if (isMyTurn)
         {
-
             MoveDone();
-            isMyTurn = false;
+            EndTurn();
         }
     }
 

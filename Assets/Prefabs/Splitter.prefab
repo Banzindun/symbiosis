@@ -71,8 +71,10 @@ MonoBehaviour:
   groundTilemap: {fileID: 0}
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   attackColor: {r: 0.764151, g: 0.16941082, b: 0.16941082, a: 1}
+  moves: 0
+  currentMove: 0
   Nutrition: 0.025
   Heal: 0.1
   inAir: 0

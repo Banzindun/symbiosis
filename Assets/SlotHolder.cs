@@ -17,6 +17,8 @@ public class SlotHolder : MonoBehaviour
     [SerializeField] private Color disabledColor;
     private Color originalColor;
 
+    [SerializeField] private Button button;
+
     public void Toggle(bool toggle)
     {
         if (toggled == toggle)
@@ -38,28 +40,23 @@ public class SlotHolder : MonoBehaviour
 
     public void Disable()
     {
-        Color color = slotImage.color;
-        color.a = 0.5f;
-        slotImage.color = color;
-
         slotImageBackground.color = disabledColor;
         letterBackground.color = disabledColor;
+
+        button.interactable = false;
     }
 
     public void Enable()
     {
-        Color color = slotImage.color;
-        color.a = 1f;
-        slotImage.color = color;
-
         slotImageBackground.color = originalColor;
         letterBackground.color = originalColor;
+
+        button.interactable = true;
     }
 
     public void UpdateCooldown(int cooldown)
     {
         cooldownLetter.text = cooldown + "";
-
         cooldownLetter.enabled = cooldown > 0;
     }
 
