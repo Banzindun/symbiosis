@@ -41,13 +41,18 @@ public class SpitterController : MonsterController
         {
             addition = new Vector3(-1f, 0, 0);
         }
-        else
-        {
-            Vector3[] choices = { new Vector3(1f, 0, 0), new Vector3(0, 1f, 0),
-                new Vector3(-1f, 0, 0), new Vector3(0, -1f, 0) };
+        //else
+        //{
+        //    Vector3[] choices = { new Vector3(1f, 0, 0), new Vector3(0, 1f, 0),
+        //        new Vector3(-1f, 0, 0), new Vector3(0, -1f, 0) };
+        //
+        //    int index = Random.Range(0, 4);
+        //    addition = choices[index];
+        //}
 
-            int index = Random.Range(0, 4);
-            addition = choices[index];
+        if (addition == Vector3.zero)
+        {
+            return;
         }
 
         List<Vector3> attackPositions = new List<Vector3>();
@@ -86,6 +91,16 @@ public class SpitterController : MonsterController
         }
     }
 
+    protected override bool PrepareAction()
+    {
+        if (attackedTiles.Count > 0)
+        {
+            animator.SetTrigger("Attack");
+            return true;
+        }
+
+        return false;
+    }
 
     protected override void PerformAction()
     {

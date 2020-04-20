@@ -55,6 +55,17 @@ public class SoldierController : MonsterController
         GameManager.Instance.AddAttackedTile(tilePosition);
     }
 
+    protected override bool PrepareAction()
+    {
+        if (tilePosition.x != -1000)
+        {
+            animator.SetTrigger("Attack");
+            return true;
+        }
+
+        return false;
+    }
+
     protected override void PerformAction()
     {
         if (tilePosition.x != -1000)

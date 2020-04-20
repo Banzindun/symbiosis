@@ -184,6 +184,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool IsEnemyActive()
+    {
+        for (int i = 0; i < enemyBehaviours.Count; i++)
+        {
+            if (enemyBehaviours[i].enabled)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void TogglePause()
     {

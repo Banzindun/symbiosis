@@ -9,9 +9,14 @@ public class MusicSettings : MonoBehaviour
     [SerializeField]
     private AudioMixer audioMixer;
 
+    [SerializeField]
+    private Slider musicSlider;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioMixer.SetFloat("MusicVolume", -55f);
+        musicSlider.value = 55f / 80f;
 
     }
 

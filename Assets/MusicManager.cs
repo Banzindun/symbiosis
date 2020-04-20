@@ -55,6 +55,18 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        Play("BackgroundMusic");
+        StartCoroutine(playEngineSound());
+    }
+
+    IEnumerator playEngineSound()
+    {
+        while (true)
+        {
+            Sound sound = Array.Find(sounds, s => s.Name == "BackgroundMusic");
+            sound.Source.clip = sound.GetClip();
+            sound.Source.Play();
+
+            yield return new WaitForSeconds(sound.Source.clip.length + 5); // Delay
+        }
     }
 }

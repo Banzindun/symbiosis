@@ -64,6 +64,7 @@ MonoBehaviour:
   animator: {fileID: 3670583648381499181}
   movementTime: 0.2
   damage: 0.2
+  occupiedTile: {fileID: 11400000, guid: b4ba950590b913f4d9def03e4e4a7007, type: 2}
   nextPosition: {x: 0, y: 0, z: 0}
   lastPosition: {x: 0, y: 0, z: 0}
   pathfindingTilemap: {fileID: 0}
@@ -74,6 +75,7 @@ MonoBehaviour:
   attackColor: {r: 0.754717, g: 0.20291919, b: 0.20291919, a: 1}
   Nutrition: 0.05
   Heal: 0.2
+  inAir: 0
 --- !u!61 &1915043365
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -190,7 +192,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -946702027
+  m_SortingLayerID: -145293095
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 5108491279943385348, guid: 92eba2b26fa5cc344bc68e9ab727bb0e,

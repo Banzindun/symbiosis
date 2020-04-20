@@ -10,6 +10,7 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     [SerializeField] protected float movementTime;
     [SerializeField] protected float damage;
+    [SerializeField] protected Tile occupiedTile;
     protected float currentTime;
 
     [SerializeField] private Vector3 nextPosition;
@@ -32,8 +33,13 @@ public abstract class MonsterController : CustomMonoBehaviour
     public float Nutrition;
     public float Heal;
 
+    [SerializeField] private bool inAir;
+
     protected void OnDestroy()
     {
+        Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
+        pathfindingTilemap.SetTile(tile, null);
+
         GameManager.Instance.RemoveEnemy(this);
     }
 
@@ -50,9 +56,20 @@ public abstract class MonsterController : CustomMonoBehaviour
     public override void OnEnemyAttack()
     {
         isMyTurn = true;
-        PerformAction();
-        isMyTurn = false;
-        GameManager.Instance.OnEnemyTurnEnd();
+
+        bool actionPrepared = PrepareAction();
+
+        // TODO: Remove when attack animation ready
+        actionPrepared = false;
+
+        if (!actionPrepared)
+        {
+            // TODO: Remove when attack animation ready
+            PerformAction();
+
+            isMyTurn = false;
+            GameManager.Instance.OnEnemyTurnEnd();
+        }
     }
 
     public override void OnEnemyMove()
@@ -67,6 +84,7 @@ public abstract class MonsterController : CustomMonoBehaviour
     }
 
     protected abstract void ScheduleAction();
+    protected abstract bool PrepareAction();
     protected abstract void PerformAction();
 
     // Start is called before the first frame update
@@ -85,8 +103,11 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     protected void Update()
     {
-        currentTime += Time.deltaTime / movementTime;
-        transform.position = Vector3.Lerp(lastPosition, nextPosition, currentTime);
+        if (inAir)
+        {
+            currentTime += Time.deltaTime / movementTime;
+            transform.position = Vector3.Lerp(lastPosition, nextPosition, currentTime);
+        }
 
         //transform.position = Vector3.MoveTowards(transform.position, movementPoint.position, moveSpeed * Time.deltaTime);
 
@@ -124,7 +145,6 @@ public abstract class MonsterController : CustomMonoBehaviour
         transform.eulerAngles = angle;
     }
 
-
     protected void FacePlayer()
     {
         float horizontal = player.transform.position.x - transform.position.x;
@@ -145,6 +165,19 @@ public abstract class MonsterController : CustomMonoBehaviour
     protected void Move()
     {
         nextPosition = DoPathfinding(nextPosition);
+
+        if (Vector3.Distance(nextPosition, lastPosition) > 0.05f)
+        {
+            inAir = false;
+            animator.SetTrigger("Jump");
+
+            Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
+            pathfindingTilemap.SetTile(tile, null);
+
+            tile = pathfindingTilemap.WorldToCell(nextPosition);
+            pathfindingTilemap.SetTile(tile, occupiedTile);
+        }
+
         lastPosition = transform.position;
         currentTime = 0;
         UpdateRotation();
@@ -187,8 +220,8 @@ public abstract class MonsterController : CustomMonoBehaviour
 
             if (path == null)
             {
-                Debug.LogWarning("No path returned!");
-                continue;
+                // No path returned, stay
+                return transform.position;
             }
 
             return GetFirstTile(path);
@@ -204,8 +237,8 @@ public abstract class MonsterController : CustomMonoBehaviour
             List<Vector3> path = AStar.FindPath(pathfindingTilemap, transform.position, advancedPositions[i]);
             if (path == null)
             {
-                Debug.LogWarning("No path returned!");
-                continue;
+                // No path returned, stay
+                return transform.position;
             }
 
             return GetFirstTile(path);
@@ -246,19 +279,10 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     protected bool IsOccupied(Vector3 position)
     {
-        if (Physics2D.OverlapCircle(position, .2f, collisionLayers))
+        Collider2D occupier = Physics2D.OverlapCircle(position, .2f, collisionLayers);
+        if (occupier != null && occupier.gameObject != gameObject)
         {
             return true;
-        }
-
-        List<CustomMonoBehaviour> enemyBehaviours = GameManager.Instance.EnemyBehaviours;
-
-        foreach (CustomMonoBehaviour enemy in enemyBehaviours)
-        {
-            if (enemy != this && Vector3.Distance(position, enemy.transform.position) <= 0.5f)
-            {
-                return true;
-            }
         }
 
         return false;
@@ -361,7 +385,6 @@ public abstract class MonsterController : CustomMonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.CurrentValue -= damage;
-            animator.SetTrigger("Attack");
             _OnDamage();
         }
     }
@@ -386,6 +409,9 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     protected void HandleDeath()
     {
+        Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
+        pathfindingTilemap.SetTile(tile, null);
+
         gameObject.layer = 0;
         //collider2D.enabled = false;
     }
@@ -393,15 +419,28 @@ public abstract class MonsterController : CustomMonoBehaviour
     protected abstract void _OnDeath();
     protected abstract void _OnDamage();
 
+    protected void EndTurn()
+    {
+        isMyTurn = false;
+        GameManager.Instance.OnEnemyTurnEnd();
+    }
+
     public override void OnAnimationEvent(string name)
     {
         switch (name)
         {
             case "Died":
-                // TODO: Disable collider and make it just lie on the ground
                 HandleDeath();
                 break;
             case "Hit":
+                // TODO: Call perform action on the monster
+                break;
+            case "ActionDone":
+                PerformAction();
+                EndTurn();
+                break;
+            case "Air":
+                inAir = true;
                 break;
         }
     }

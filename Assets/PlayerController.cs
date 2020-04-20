@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Toolbox;
+using TMPro;
 
 public class PlayerController : CustomMonoBehaviour
 {
@@ -20,10 +21,12 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] Transform movementPoint;
     [SerializeField] LayerMask collisionLayers;
     [SerializeField] LayerMask actionDirectionCollisionLayers;
+    [SerializeField] LayerMask deadEnemyCollisionLayer;
     [SerializeField] GridLayout gridLayout;
     private PlayerHealth health;
 
     [Header("Constants:")]
+    [SerializeField] private float feastForWinningGame = 0.7f;
     [SerializeField] private float moveSpeed;
     [SerializeField] int movesPerTurn = 2;
     [SerializeField] private float attackDamage = 1f;
@@ -32,16 +35,30 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] private int shootCooldown = 12;
     private int currentShootCooldown;
 
+
     [Header("UI:")]
     [SerializeField] private Button nextTurnButton;
     [SerializeField] private SlotHolder attackSlotHolder;
     [SerializeField] private SlotHolder shootSlotHolder;
     [SerializeField] private SlotHolder bombSlotHolder;
     [SerializeField] private SlotHolder feedSlotHolder;
+    [SerializeField] private Image healthIndicator;
+    [SerializeField] private TextMeshProUGUI healthValue;
+    [SerializeField] private Image feastIndicator;
+    [SerializeField] private TextMeshProUGUI feastValue;
+    [SerializeField] private Image feastPointIndicator;
+    [SerializeField] private TextMeshProUGUI stepsText;
+
+    [SerializeField] private Button wText;
+    [SerializeField] private Button sText;
+    [SerializeField] private Button aText;
+    [SerializeField] private Button dText;
 
     [Header("Debug:")]
     [SerializeField] private ActionType performedAction;
     [SerializeField] private Vector3 actionDirection;
+    [SerializeField] private bool inAir;
+    [SerializeField] private bool unlimitedMovement;
 
     bool isPlayerTurn;
 
@@ -49,6 +66,8 @@ public class PlayerController : CustomMonoBehaviour
 
     private bool bombAvailable;
     private bool shootAvailable;
+
+    private bool performingAction = false;
 
     private float energy;
     public float Energy
@@ -110,7 +129,18 @@ public class PlayerController : CustomMonoBehaviour
     {
         nextTurnButton.interactable = true;
         isPlayerTurn = true;
+
         currentMoves = movesPerTurn;
+
+        bool someEnemiesActive = GameManager.Instance.IsEnemyActive();
+        if (someEnemiesActive)
+        {
+            unlimitedMovement = false;
+        }
+        else
+        {
+            unlimitedMovement = true;
+        }
 
         performedAction = ActionType.NONE;
         actionDirection = Vector3.zero;
@@ -134,7 +164,25 @@ public class PlayerController : CustomMonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, movementPoint.position, moveSpeed * Time.deltaTime);
+        if (inAir)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, movementPoint.position, moveSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, movementPoint.position) < 0.05f)
+            {
+                inAir = false;
+                if (unlimitedMovement)
+                {
+                    unlimitedMovement = !GameManager.Instance.IsEnemyActive();
+                }
+                else
+                {
+                    currentMoves--;
+                }
+            }
+
+            return;
+        }
 
         if (!isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
         {
@@ -150,14 +198,19 @@ public class PlayerController : CustomMonoBehaviour
                 movementReceived = HandleMovementInput();
             }
 
-            if (!movementReceived)
+            if (movementReceived)
+            {
+                inAir = false;
+                animator.SetTrigger("Jump");
+            }
+            else
             {
                 HandleActionInput();
             }
 
             UpdateUI();
         }
-        else
+        else if (!performingAction)
         {
             if (actionDirection == Vector3.zero)
             {
@@ -165,9 +218,9 @@ public class PlayerController : CustomMonoBehaviour
             }
             else
             {
-                bool actionPerformed = PerformAction();
+                performingAction = PerformAction();
 
-                if (actionPerformed)
+                if (performingAction)
                 {
                     UpdateUI();
                 }
@@ -190,8 +243,28 @@ public class PlayerController : CustomMonoBehaviour
         bombSlotHolder.UpdateCooldown(currentBombCooldown);
         shootSlotHolder.UpdateCooldown(currentShootCooldown);
 
-        // TODO: Update energy
-        // TODO: Update health
+        healthIndicator.fillAmount = health.CurrentValue;
+        healthValue.text = (int)(health.CurrentValue * 100f) + "";
+
+        feastIndicator.fillAmount = energy;
+        feastValue.text = (int)(energy * 100f) + "";
+        feastPointIndicator.fillAmount = feastForWinningGame;
+
+        stepsText.text = currentMoves + "";
+
+
+        Vector3Int[] directions = Utils.FourDirections;
+
+        for (int i = 0; i < directions.Length; i++)
+        {
+            if (!IsMoveAvailable(directions[i]))
+            {
+                // TODO: Mark as unavailable
+                continue;
+            }
+
+            // TODO: Mark as available
+        }
     }
 
     private bool HandleMovementInput()
@@ -220,27 +293,78 @@ public class PlayerController : CustomMonoBehaviour
 
             if (horizontal != 0)
             {
-                if (!Physics2D.OverlapCircle(movementPoint.position + new Vector3(horizontal, 0f, 0f), .2f, collisionLayers))
-                {
-                    movementPoint.position += new Vector3(horizontal, 0f, 0f);
-                    currentMoves--;
-                    FaceVector(new Vector3(horizontal, 0f, 0f));
-                    return true;
-                }
+                MoveHorizontal(horizontal);
+                return true;
             }
             else if (vertical != 0)
             {
-                if (!Physics2D.OverlapCircle(movementPoint.position + new Vector3(0f, vertical, 0f), .2f, collisionLayers))
-                {
-                    movementPoint.position += new Vector3(0, vertical, 0f);
-                    currentMoves--;
-
-                    return true;
-                }
+                MoveVertical(vertical);
+                return true;
             }
         }
 
         return false;
+    }
+
+    public void MoveHorizontalUI(float horizontal)
+    {
+        if (inAir || !isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
+        {
+            return;
+        }
+
+        if (performedAction == ActionType.NONE)
+        {
+            MoveHorizontal(horizontal);
+        }
+        else if (actionDirection == Vector3.zero)
+        {
+            HandleDirectionSelect(new Vector3(horizontal, 0f, 0f));
+        }
+    }
+
+    protected void MoveHorizontal(float horizontal)
+    {
+        if (IsMoveAvailable(new Vector3(horizontal, 0f, 0f)))
+        {
+            movementPoint.position += new Vector3(horizontal, 0f, 0f);
+            FaceVector(new Vector3(horizontal, 0f, 0f));
+        }
+    }
+
+    public void MoveVerticalUI(float vertical)
+    {
+        if (inAir || !isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
+        {
+            return;
+        }
+
+        if (performedAction == ActionType.NONE)
+        {
+            MoveVertical(vertical);
+        }
+        else if (actionDirection == Vector3.zero)
+        {
+            HandleDirectionSelect(new Vector3(0f, vertical, 0f));
+        }
+    }
+
+    protected void MoveVertical(float vertical)
+    {
+        if (IsMoveAvailable(new Vector3(0f, vertical, 0f)))
+        {
+            movementPoint.position += new Vector3(0, vertical, 0f);
+        }
+    }
+
+    public bool IsMoveAvailable(Vector3Int move)
+    {
+        return IsMoveAvailable(new Vector3((float)move.x, (float)move.y, (float)move.z));
+    }
+
+    public bool IsMoveAvailable(Vector3 move)
+    {
+        return !Physics2D.OverlapCircle(movementPoint.position + move, .2f, collisionLayers);
     }
 
     private void FaceVector(Vector3 position)
@@ -258,6 +382,42 @@ public class PlayerController : CustomMonoBehaviour
         transform.eulerAngles = angle;
     }
 
+    public void HandleActionInputUI(string actionType)
+    {
+        ActionType type = ActionType.NONE;
+        switch (actionType)
+        {
+            case "Attack":
+                type = ActionType.ATTACK;
+                break;
+            case "Feed":
+                type = ActionType.FEED;
+                break;
+            case "Bomb":
+                type = ActionType.BOMB;
+                break;
+            case "Shoot":
+                type = ActionType.SHOOT;
+                break;
+        }
+
+        if (IsActionAvailable(type))
+        {
+            performedAction = type;
+            if (type == ActionType.FEED)
+            {
+                PerformFeedAction();
+                return;
+            }
+        }
+
+
+        // TODO: Show the tooltip 
+        ShowDirectionSelectionTooltip();
+    }
+
+
+
     private void HandleActionInput()
     {
         if (IsActionAvailable(ActionType.ATTACK) && Input.GetKeyDown(KeyCode.E))
@@ -267,19 +427,7 @@ public class PlayerController : CustomMonoBehaviour
         else if (IsActionAvailable(ActionType.FEED) && Input.GetKeyDown(KeyCode.F))
         {
             performedAction = ActionType.FEED;
-
-            // TODO: Play the feed animation, when done end the turn
-            // TODO: Hide the body in the middle of the animation after the bite phase
-            MonsterController enemyController = Utils.GetComponentAtPosition2D<MonsterController>(transform.position);
-
-            float healthGain = enemyController.Heal;
-            health.CurrentValue += healthGain;
-            Energy += enemyController.Nutrition;
-
-            Destroy(enemyController.gameObject);
-
-            // TODO; Do after animation done
-            EndTurn();
+            PerformFeedAction();
             return;
         }
         else if (IsActionAvailable(ActionType.SHOOT) && Input.GetKeyDown(KeyCode.R))
@@ -295,13 +443,19 @@ public class PlayerController : CustomMonoBehaviour
         ShowDirectionSelectionTooltip();
     }
 
+    private void PerformFeedAction()
+    {
+        animator.SetTrigger("Feed");
+        MusicManager.Instance.Play("PlayerFeed");
+    }
+
     private void ShowDirectionSelectionTooltip()
     {
         Vector3Int[] directions = Utils.FourDirections;
 
         for (int i = 0; i < directions.Length; i++)
         {
-            if (Physics2D.OverlapCircle(transform.position + directions[i], .2f, actionDirectionCollisionLayers))
+            if (!IsMoveAvailable(directions[i]))
             {
                 // TODO: Mark as unavailable
                 continue;
@@ -336,8 +490,18 @@ public class PlayerController : CustomMonoBehaviour
             case ActionType.BOMB:
                 return bombAvailable;
             case ActionType.FEED:
-                MonsterController enemyController = Utils.GetComponentAtPosition2D<MonsterController>(transform.position);
-                return enemyController != null;
+                {
+                    Collider2D enemyCollider = Physics2D.OverlapCircle(transform.position, .2f, deadEnemyCollisionLayer); // Default layer
+                    if (enemyCollider != null)
+                    {
+                        MonsterController controller = enemyCollider.GetComponent<MonsterController>();
+                        return controller != null;
+                    }
+
+
+
+                    return false;
+                }
             case ActionType.SHOOT:
                 return shootAvailable;
             default:
@@ -438,8 +602,10 @@ public class PlayerController : CustomMonoBehaviour
 
     public void EndTurn()
     {
-        if (isPlayerTurn)
+        if (isPlayerTurn && GameManager.Instance.state == GameManager.GameState.PLAYER_TURN)
         {
+            performingAction = false;
+            performedAction = ActionType.NONE;
             isPlayerTurn = false;
             nextTurnButton.interactable = false;
             GameManager.Instance.OnPlayerTurnEnd();
@@ -451,6 +617,33 @@ public class PlayerController : CustomMonoBehaviour
         animator.SetTrigger("Die");
     }
 
+    private void HandleFeed()
+    {
+        Collider2D enemyCollider = Physics2D.OverlapCircle(transform.position, .2f, deadEnemyCollisionLayer);
+
+        if (enemyCollider != null)
+        {
+            MonsterController enemyController = enemyCollider.GetComponent<MonsterController>();
+
+            if (enemyController != null)
+            {
+                // TODO: Hide the body in the middle of the animation after the bite phase
+                //MonsterController enemyController = Utils.GetComponentAtPosition2D<MonsterController>(transform.position);
+
+                float healthGain = enemyController.Heal;
+                health.CurrentValue += healthGain;
+                Energy += enemyController.Nutrition;
+
+                Destroy(enemyController.gameObject);
+                EndTurn();
+                return;
+            }
+        }
+
+        Debug.LogError("Somehow tried to consume enemy that wasn't there (no collider or enemyController found under the player)!");
+        EndTurn();
+    }
+
     public override void OnAnimationEvent(string name)
     {
         switch (name)
@@ -460,6 +653,8 @@ public class PlayerController : CustomMonoBehaviour
                 break;
             case "Hit":
                 {
+                    MusicManager.Instance.Play("PlayerAttack");
+
                     Vector3 strikePosition = transform.position + actionDirection;
                     Health enemyHealth = Utils.GetComponentAtPosition2D<Health>(strikePosition);
 
@@ -471,6 +666,12 @@ public class PlayerController : CustomMonoBehaviour
                 break;
             case "AttackDone":
                 EndTurn();
+                break;
+            case "FeedDone":
+                HandleFeed();
+                break;
+            case "Air":
+                inAir = true;
                 break;
         }
     }

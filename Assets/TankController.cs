@@ -91,6 +91,17 @@ public class TankController : MonsterController
     }
 
 
+    protected override bool PrepareAction()
+    {
+        if (attackedTiles.Count > 0)
+        {
+            animator.SetTrigger("Attack");
+            return true;
+        }
+
+        return false;
+    }
+
     protected override void PerformAction()
     {
         for (int i = 0; i < attackedTiles.Count; i++)
