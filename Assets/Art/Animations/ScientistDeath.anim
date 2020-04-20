@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerJump
+  m_Name: ScientistDeath
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,16 +20,10 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 4330694004763997605, guid: 0cbc3eb37ea897c4a9365e9abcaef30a,
+      value: {fileID: 7254627727539781878, guid: 8c3d4d6c03eab594c9ca37deae095c79,
         type: 3}
-    - time: 0.083333336
-      value: {fileID: -9012280687236740709, guid: 0cbc3eb37ea897c4a9365e9abcaef30a,
-        type: 3}
-    - time: 0.25
-      value: {fileID: 3706479157532092022, guid: 0cbc3eb37ea897c4a9365e9abcaef30a,
-        type: 3}
-    - time: 0.5833333
-      value: {fileID: 6651360496480428754, guid: 0cbc3eb37ea897c4a9365e9abcaef30a,
+    - time: 0.41666666
+      value: {fileID: -5261829105079182118, guid: 8c3d4d6c03eab594c9ca37deae095c79,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -50,16 +44,14 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 4330694004763997605, guid: 0cbc3eb37ea897c4a9365e9abcaef30a, type: 3}
-    - {fileID: -9012280687236740709, guid: 0cbc3eb37ea897c4a9365e9abcaef30a, type: 3}
-    - {fileID: 3706479157532092022, guid: 0cbc3eb37ea897c4a9365e9abcaef30a, type: 3}
-    - {fileID: 6651360496480428754, guid: 0cbc3eb37ea897c4a9365e9abcaef30a, type: 3}
+    - {fileID: 7254627727539781878, guid: 8c3d4d6c03eab594c9ca37deae095c79, type: 3}
+    - {fileID: -5261829105079182118, guid: 8c3d4d6c03eab594c9ca37deae095c79, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.6666666
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -78,11 +70,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.25
-    functionName: OnAnimationEvent
-    data: Air
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

@@ -47,7 +47,6 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] private TextMeshProUGUI healthValue;
     [SerializeField] private Image feastIndicator;
     [SerializeField] private TextMeshProUGUI feastValue;
-    [SerializeField] private Image feastPointIndicator;
     [SerializeField] private TextMeshProUGUI stepsText;
 
     [SerializeField] private Button wButton;
@@ -232,8 +231,7 @@ public class PlayerController : CustomMonoBehaviour
         healthValue.text = (int)(health.CurrentValue * 100f) + "";
 
         feastIndicator.fillAmount = Mathf.Clamp((float)eatenEnemies / maxEatenEnemies, 0f, 1f);
-        feastValue.text = eatenEnemies + "";
-        feastPointIndicator.fillAmount = (float)eatenEnemiesToWinGame / maxEatenEnemies;
+        feastValue.text = eatenEnemies + "/" + eatenEnemiesToWinGame;
 
         if (unlimitedMovement)
         {
@@ -593,6 +591,7 @@ public class PlayerController : CustomMonoBehaviour
     {
         if (isPlayerTurn && GameManager.Instance.state == GameManager.GameState.PLAYER_TURN)
         {
+            actionDirection = Vector3.zero;
             performingAction = false;
             performedAction = ActionType.NONE;
             isPlayerTurn = false;

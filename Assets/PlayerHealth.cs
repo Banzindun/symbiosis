@@ -29,7 +29,7 @@ public class PlayerHealth : MonoBehaviour
 
             currentValue = value;
 
-            if (currentValue <= 0)
+            if (currentValue <= 0.05f)
             {
                 OnDeath();
             }
