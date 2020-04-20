@@ -38,6 +38,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject dialog;
     [SerializeField] private GameObject gameOver;
 
+    [SerializeField] private DialogManager dialogManager;
+    [SerializeField] private Dialog startDialog;
+    [SerializeField] private Dialog endDialog;
+
     [SerializeField] private int currentLevelIndex;
 
     [SerializeField] private Level[] levels;

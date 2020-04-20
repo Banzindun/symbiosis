@@ -80,6 +80,11 @@ public class SoldierController : MonsterController
         return false;
     }
 
+    protected override void _OnMove()
+    {
+        MusicManager.Instance.Play("SoldierMove");
+    }
+
     protected override void PerformAction()
     {
         if (tilePosition.x != -1000)

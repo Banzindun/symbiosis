@@ -27,6 +27,11 @@ public class ScientistController : MonsterController
         lastPosition = transform.position;
     }
 
+    protected override void _OnMove()
+    {
+
+    }
+
     protected new void Update()
     {
         if (isMyTurn)

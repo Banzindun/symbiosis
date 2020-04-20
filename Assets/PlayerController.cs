@@ -153,13 +153,17 @@ public class PlayerController : CustomMonoBehaviour
                 else
                 {
                     currentMoves--;
+                    if (currentMoves <= 0)
+                    {
+                        EndTurn();
+                    }
                 }
             }
 
             return;
         }
 
-        if (!isPlayerTurn || GameManager.Instance.state != GameManager.GameState.PLAYER_TURN)
+        if (currentMoves <= 0 || !isPlayerTurn || GameManager.Instance.state != GameManager.GameState.PLAYER_TURN)
         {
             return;
         }
@@ -212,6 +216,7 @@ public class PlayerController : CustomMonoBehaviour
     {
         inAir = false;
         animator.SetTrigger("Jump");
+        MusicManager.Instance.Play("PlayerMove");
     }
 
     private void UpdateUI()
@@ -474,7 +479,7 @@ public class PlayerController : CustomMonoBehaviour
 
     private bool IsActionAvailable(ActionType type)
     {
-        if (inAir || performingAction || performedAction != ActionType.NONE)
+        if (currentMoves <= 0 || inAir || performingAction || performedAction != ActionType.NONE)
         {
             return false;
         }

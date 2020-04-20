@@ -96,6 +96,11 @@ public class TankController : MonsterController
         }
     }
 
+    protected override void _OnMove()
+    {
+        MusicManager.Instance.Play("TankMove");
+    }
+
 
     protected override bool PrepareAction()
     {

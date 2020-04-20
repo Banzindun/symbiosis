@@ -3,10 +3,25 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using Toolbox;
+using UnityEngine.UI;
 
 public class SpitterController : MonsterController
 {
     [SerializeField] private float range;
+
+    [SerializeField] private Sprite horizontalLine;
+    [SerializeField] private Sprite verticalLine;
+    [SerializeField] private Sprite verticalDownEnd;
+    [SerializeField] private Sprite verticalUpEnd;
+    [SerializeField] private Sprite horizontalLeftEnd;
+    [SerializeField] private Sprite horizontalRightEnd;
+
+    [SerializeField] private Sprite initialHorizontalRight;
+    [SerializeField] private Sprite initialHorizontalLeft;
+    [SerializeField] private Sprite initialVerticalUp;
+    [SerializeField] private Sprite initialVerticalDown;
+
+    [SerializeField] private List<GameObject> ray;
 
     private List<Vector3Int> attackedTiles = new List<Vector3Int>();
 
@@ -63,6 +78,20 @@ public class SpitterController : MonsterController
 
         List<Vector3> attackPositions = new List<Vector3>();
         Vector3 position = transform.position;
+
+        if (ray != null)
+        {
+            for (int i = 0; i < ray.Count; i++)
+            {
+                ray[i].SetActive(false);
+                Destroy(ray[i]);
+            }
+            ray.Clear();
+        }
+
+        ray = new List<GameObject>();
+        AddInitialRay(transform.position); // Initnial ray
+
         bool playerReached = false;
         for (int i = 0; i < range; i++)
         {
@@ -78,6 +107,9 @@ public class SpitterController : MonsterController
                     attackPositions.Clear();
                 }
 
+                Destroy(ray[ray.Count - 1]);
+                ray.RemoveAt(ray.Count - 1);
+                AddRay(position - attackDirection, true);
                 break;
             }
 
@@ -86,6 +118,16 @@ public class SpitterController : MonsterController
             if (Vector3.Distance(position, playerPosition) < 0.05f)
             {
                 playerReached = true;
+            }
+
+            // Add the ray:
+            if (i == range - 1)
+            {
+                AddRay(position, true);
+            }
+            else
+            {
+                AddRay(position, false);
             }
         }
 
@@ -97,6 +139,126 @@ public class SpitterController : MonsterController
 
             attackedTiles.Add(tilePosition);
             GameManager.Instance.AddAttackedTile(tilePosition);
+        }
+    }
+
+    private void AddRay(Vector3 position, bool ending)
+    {
+        if (attackDirection.x == 1f)
+        {
+            GameObject newRay = new GameObject();
+            newRay.transform.parent = transform;
+            newRay.transform.position = position;
+            newRay.SetActive(false);
+            SpriteRenderer spriteRenderer = newRay.AddComponent<SpriteRenderer>();
+
+            if (ending)
+            {
+                spriteRenderer.sprite = horizontalRightEnd;
+            }
+            else
+            {
+                spriteRenderer.sprite = horizontalLine;
+            }
+
+            spriteRenderer.sortingLayerName = "Front";
+
+            ray.Add(newRay);
+        }
+        else if (attackDirection.x == -1f)
+        {
+            GameObject newRay = new GameObject();
+            newRay.SetActive(false);
+            newRay.transform.parent = transform;
+            newRay.transform.position = position;
+            SpriteRenderer spriteRenderer = newRay.AddComponent<SpriteRenderer>();
+
+            if (ending)
+            {
+                spriteRenderer.sprite = horizontalLeftEnd;
+            }
+            else
+            {
+                spriteRenderer.sprite = horizontalLine;
+            }
+
+            spriteRenderer.sortingLayerName = "Front";
+
+            ray.Add(newRay);
+        }
+        else if (attackDirection.y == 1f)
+        {
+            GameObject newRay = new GameObject();
+            newRay.transform.parent = transform;
+            newRay.transform.position = position;
+            newRay.SetActive(false);
+            SpriteRenderer spriteRenderer = newRay.AddComponent<SpriteRenderer>();
+
+            if (ending)
+            {
+                spriteRenderer.sprite = verticalUpEnd;
+            }
+            else
+            {
+                spriteRenderer.sprite = verticalLine;
+            }
+
+            spriteRenderer.sortingLayerName = "Front";
+
+            ray.Add(newRay);
+        }
+        if (attackDirection.y == -1f)
+        {
+            GameObject newRay = new GameObject();
+            newRay.transform.parent = transform;
+            newRay.transform.position = position;
+            newRay.SetActive(false);
+            SpriteRenderer spriteRenderer = newRay.AddComponent<SpriteRenderer>();
+
+            if (ending)
+            {
+                spriteRenderer.sprite = verticalDownEnd;
+            }
+            else
+            {
+                spriteRenderer.sprite = verticalLine;
+            }
+
+            spriteRenderer.sortingLayerName = "Front";
+
+            ray.Add(newRay);
+        }
+    }
+
+    private void CreateRayPart(Vector3 position, Sprite sprite)
+    {
+        GameObject newRay = new GameObject();
+        newRay.transform.parent = transform;
+        newRay.transform.position = position;
+        newRay.SetActive(false);
+        SpriteRenderer spriteRenderer = newRay.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = sprite;
+        spriteRenderer.sortingLayerName = "Front";
+        ray.Add(newRay);
+    }
+
+    private void AddInitialRay(Vector3 position)
+    {
+        if (attackDirection.x == 1f)
+        {
+            CreateRayPart(position, initialHorizontalRight);
+        }
+        else if (attackDirection.x == -1f)
+        {
+            CreateRayPart(position, initialHorizontalLeft);
+        }
+        else if (attackDirection.y == 1f)
+        {
+            CreateRayPart(position, initialVerticalUp);
+        }
+        if (attackDirection.y == -1f)
+        {
+            CreateRayPart(position, initialVerticalDown);
         }
     }
 
@@ -125,6 +287,11 @@ public class SpitterController : MonsterController
     protected override void Move()
     {
         lastPosition = transform.position;
+    }
+
+    protected override void _OnMove()
+    {
+
     }
 
     protected new void Update()
@@ -157,8 +324,26 @@ public class SpitterController : MonsterController
         switch (name)
         {
             case "RayOpen":
+                {
+                    if (attackedTiles.Count > 0)
+                    {
+                        for (int i = 0; i < ray.Count; i++)
+                        {
+                            ray[i].SetActive(true);
+                        }
+                    }
+                    MusicManager.Instance.Play("SplitterAttack");
+                }
                 break;
             case "RayClose":
+                {
+                    for (int i = 0; i < ray.Count; i++)
+                    {
+                        ray[i].SetActive(false);
+                        Destroy(ray[i]);
+                    }
+                    ray.Clear();
+                }
                 break;
             default:
                 break;

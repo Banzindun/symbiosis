@@ -182,6 +182,7 @@ public abstract class MonsterController : CustomMonoBehaviour
 
             inAir = false;
             animator.SetTrigger("Jump");
+            _OnMove();
 
             Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
             pathfindingTilemap.SetTile(tile, null);
@@ -199,6 +200,8 @@ public abstract class MonsterController : CustomMonoBehaviour
         currentTime = 0;
         UpdateRotation();
     }
+
+    protected abstract void _OnMove();
 
     protected Vector3 DoPathfinding(Vector3 oldPosition)
     {
@@ -445,7 +448,12 @@ public abstract class MonsterController : CustomMonoBehaviour
         pathfindingTilemap.SetTile(tile, null);
 
         gameObject.layer = 0;
+
         //collider2D.enabled = false;
+        if (isMyTurn)
+        {
+            EndTurn();
+        }
     }
 
     protected abstract void _OnDeath();

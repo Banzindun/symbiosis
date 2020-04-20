@@ -28,6 +28,7 @@ public class MineController : CustomMonoBehaviour
     private void Explode()
     {
         animator.SetTrigger("Explode");
+        MusicManager.Instance.Play("MineExplosion");
     }
 
     public override void OnAnimationEvent(string name)

@@ -78,6 +78,27 @@ MonoBehaviour:
   Heal: 0.1
   inAir: 0
   range: 10
+  horizontalLine: {fileID: 8911804055396415374, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  verticalLine: {fileID: -1660157082231324491, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  verticalDownEnd: {fileID: -4797215041123585525, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  verticalUpEnd: {fileID: 3507594134719808164, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  horizontalLeftEnd: {fileID: -730888518695446746, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  horizontalRightEnd: {fileID: 7170364036638077809, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  initialHorizontalRight: {fileID: -5760230309892218949, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  initialHorizontalLeft: {fileID: 5562224252629771974, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  initialVerticalUp: {fileID: -8140256412138082393, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  initialVerticalDown: {fileID: -6459400936778702748, guid: 307b2d8ad1de4ed4aad971a94d829fa7,
+    type: 3}
+  ray: []
 --- !u!61 &5726008104737280535
 BoxCollider2D:
   m_ObjectHideFlags: 0
