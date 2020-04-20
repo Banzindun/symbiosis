@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1335507593333478981}
   m_Layer: 9
   m_Name: SoldierPrefab
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,6 @@ MonoBehaviour:
   attackColor: {r: 0.6415094, g: 0.2269491, b: 0.2269491, a: 1}
   moves: 2
   currentMove: 0
-  Nutrition: 0.025
   Heal: 0.1
   inAir: 0
 --- !u!61 &1889147587

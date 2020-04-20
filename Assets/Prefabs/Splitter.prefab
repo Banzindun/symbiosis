@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7487611483562621113}
   m_Layer: 9
   m_Name: Splitter
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,6 @@ MonoBehaviour:
   attackColor: {r: 0.764151, g: 0.16941082, b: 0.16941082, a: 1}
   moves: 0
   currentMove: 0
-  Nutrition: 0.025
   Heal: 0.1
   inAir: 0
   range: 10

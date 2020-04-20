@@ -12,7 +12,6 @@ public class PlayerController : CustomMonoBehaviour
     {
         ATTACK,
         FEED,
-        SHOOT,
         BOMB,
         NONE
     }
@@ -25,26 +24,23 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] GridLayout gridLayout;
     private PlayerHealth health;
 
-    [SerializeField] private SpriteRenderer upArrow;
-    [SerializeField] private SpriteRenderer downArrow;
-    [SerializeField] private SpriteRenderer leftArrow;
-    [SerializeField] private SpriteRenderer rightArrow;
+    [SerializeField] private GameObject minePrefab;
 
     [Header("Constants:")]
-    [SerializeField] private float feastForWinningGame = 0.7f;
+
     [SerializeField] private float moveSpeed;
     [SerializeField] int movesPerTurn = 2;
     [SerializeField] private float attackDamage = 1f;
     [SerializeField] private int bombCooldown = 20;
     private int currentBombCooldown;
-    [SerializeField] private int shootCooldown = 12;
-    private int currentShootCooldown;
+
+    [SerializeField] private int eatenEnemiesToWinGame = 1;
+    [SerializeField] private int maxEatenEnemies;
 
 
     [Header("UI:")]
     [SerializeField] private Button nextTurnButton;
     [SerializeField] private SlotHolder attackSlotHolder;
-    [SerializeField] private SlotHolder shootSlotHolder;
     [SerializeField] private SlotHolder bombSlotHolder;
     [SerializeField] private SlotHolder feedSlotHolder;
     [SerializeField] private Image healthIndicator;
@@ -71,24 +67,10 @@ public class PlayerController : CustomMonoBehaviour
     int currentMoves;
 
     private bool bombAvailable;
-    private bool shootAvailable;
 
     private bool performingAction = false;
 
-    private float energy;
-    public float Energy
-    {
-        get => energy;
-        set
-        {
-            energy = value;
-
-            if (energy > 1)
-            {
-                energy = 1;
-            }
-        }
-    }
+    private int eatenEnemies;
 
     // Start is called before the first frame update
     void Start()
@@ -99,14 +81,7 @@ public class PlayerController : CustomMonoBehaviour
         health.OnDeathDelegate += OnDeath;
 
         GameManager.Instance.playerBehaviour = this;
-
-        // TODO: Uncomment when ready
-        // currentBombCooldown = bombCooldown;
-        // currentShootCooldown = shootCooldown;
-
-        // TODO: Comment when ready
-        bombAvailable = true;
-        shootAvailable = true;
+        currentBombCooldown = bombCooldown;
     }
 
     private void OnDestroy()
@@ -120,12 +95,6 @@ public class PlayerController : CustomMonoBehaviour
         if (currentBombCooldown == 0)
         {
             bombAvailable = true;
-        }
-
-        currentShootCooldown--;
-        if (currentShootCooldown == 0)
-        {
-            shootAvailable = true;
         }
 
         UpdateUI();
@@ -190,7 +159,7 @@ public class PlayerController : CustomMonoBehaviour
             return;
         }
 
-        if (!isPlayerTurn || GameManager.Instance.state == GameManager.GameState.PAUSED)
+        if (!isPlayerTurn || GameManager.Instance.state != GameManager.GameState.PLAYER_TURN)
         {
             return;
         }
@@ -198,7 +167,12 @@ public class PlayerController : CustomMonoBehaviour
         if (performedAction == ActionType.NONE)
         {
             // Handle movement
-            bool movementReceived = HandleMovementInput();
+            bool movementReceived = false;
+
+            if (Vector3.Distance(transform.position, movementPoint.position) < 0.05f)
+            {
+                movementReceived = HandleMovementInput();
+            }
 
             if (movementReceived)
             {
@@ -243,19 +217,17 @@ public class PlayerController : CustomMonoBehaviour
     private void UpdateUI()
     {
         attackSlotHolder.Toggle(IsActionAvailable(ActionType.ATTACK));
-        shootSlotHolder.Toggle(IsActionAvailable(ActionType.SHOOT));
         bombSlotHolder.Toggle(IsActionAvailable(ActionType.BOMB));
         feedSlotHolder.Toggle(IsActionAvailable(ActionType.FEED));
 
         bombSlotHolder.UpdateCooldown(currentBombCooldown);
-        shootSlotHolder.UpdateCooldown(currentShootCooldown);
 
         healthIndicator.fillAmount = health.CurrentValue;
         healthValue.text = (int)(health.CurrentValue * 100f) + "";
 
-        feastIndicator.fillAmount = energy;
-        feastValue.text = (int)(energy * 100f) + "";
-        feastPointIndicator.fillAmount = feastForWinningGame;
+        feastIndicator.fillAmount = Mathf.Clamp((float)eatenEnemies / maxEatenEnemies, 0f, 1f);
+        feastValue.text = eatenEnemies + "";
+        feastPointIndicator.fillAmount = (float)eatenEnemiesToWinGame / maxEatenEnemies;
 
         if (unlimitedMovement)
         {
@@ -310,13 +282,11 @@ public class PlayerController : CustomMonoBehaviour
 
             if (horizontal != 0)
             {
-                MoveHorizontal(horizontal);
-                return true;
+                return MoveHorizontal(horizontal);
             }
             else if (vertical != 0)
             {
-                MoveVertical(vertical);
-                return true;
+                return MoveVertical(vertical);
             }
         }
 
@@ -341,13 +311,16 @@ public class PlayerController : CustomMonoBehaviour
         }
     }
 
-    protected void MoveHorizontal(float horizontal)
+    protected bool MoveHorizontal(float horizontal)
     {
         if (IsMoveAvailable(new Vector3(horizontal, 0f, 0f)))
         {
             movementPoint.position += new Vector3(horizontal, 0f, 0f);
             FaceVector(new Vector3(horizontal, 0f, 0f));
+            return true;
         }
+
+        return false;
     }
 
     public void MoveVerticalUI(float vertical)
@@ -368,12 +341,14 @@ public class PlayerController : CustomMonoBehaviour
         }
     }
 
-    protected void MoveVertical(float vertical)
+    protected bool MoveVertical(float vertical)
     {
         if (IsMoveAvailable(new Vector3(0f, vertical, 0f)))
         {
             movementPoint.position += new Vector3(0, vertical, 0f);
+            return true;
         }
+        return false;
     }
 
     public bool IsMoveAvailable(Vector3Int move)
@@ -420,9 +395,6 @@ public class PlayerController : CustomMonoBehaviour
             case "Bomb":
                 type = ActionType.BOMB;
                 break;
-            case "Shoot":
-                type = ActionType.SHOOT;
-                break;
         }
 
         if (IsActionAvailable(type))
@@ -454,11 +426,7 @@ public class PlayerController : CustomMonoBehaviour
             PerformFeedAction();
             return;
         }
-        else if (IsActionAvailable(ActionType.SHOOT) && Input.GetKeyDown(KeyCode.R))
-        {
-            performedAction = ActionType.SHOOT;
-        }
-        else if (IsActionAvailable(ActionType.BOMB) && Input.GetKeyDown(KeyCode.G))
+        else if (IsActionAvailable(ActionType.BOMB) && Input.GetKeyDown(KeyCode.R))
         {
             performedAction = ActionType.BOMB;
         }
@@ -531,8 +499,6 @@ public class PlayerController : CustomMonoBehaviour
 
                     return false;
                 }
-            case ActionType.SHOOT:
-                return shootAvailable;
             default:
                 break;
         }
@@ -606,23 +572,11 @@ public class PlayerController : CustomMonoBehaviour
 
             return true;
         }
-        else if (performedAction == ActionType.SHOOT)
-        {
-            FaceVector(actionDirection);
-
-            // TODO: Play that shoot animation when the projectile hits, then next turn
-
-            shootAvailable = false;
-            currentShootCooldown = shootCooldown;
-            return true;
-        }
         else if (performedAction == ActionType.BOMB)
         {
             FaceVector(actionDirection);
-            // TODO: Place the bomb directly from here
 
-            bombAvailable = false;
-            currentBombCooldown = bombCooldown;
+            animator.SetTrigger("LayMine");
             return true;
         }
 
@@ -661,7 +615,7 @@ public class PlayerController : CustomMonoBehaviour
 
                 float healthGain = enemyController.Heal;
                 health.CurrentValue += healthGain;
-                Energy += enemyController.Nutrition;
+                eatenEnemies++;
 
                 Destroy(enemyController.gameObject);
                 EndTurn();
@@ -701,6 +655,16 @@ public class PlayerController : CustomMonoBehaviour
                 break;
             case "Air":
                 inAir = true;
+                break;
+            case "MinePlaced":
+                {
+                    GameObject mine = Instantiate(minePrefab);
+                    mine.transform.position = transform.position + actionDirection;
+
+                    bombAvailable = false;
+                    currentBombCooldown = bombCooldown;
+                    EndTurn();
+                }
                 break;
         }
     }

@@ -12,6 +12,7 @@ public class SpitterController : MonsterController
 
     protected override void ScheduleAction()
     {
+        player = GameManager.Instance.playerBehaviour;
         bool playerInRange = Vector3.Distance(transform.position, player.transform.position) < range;
 
         FacePlayer();
@@ -25,26 +26,26 @@ public class SpitterController : MonsterController
 
         Vector3 playerPosition = player.transform.position;
 
-        Vector3 addition = Vector3.zero;
+        attackDirection = Vector3.zero;
         // First check around the positions 
         if (IsAbove(playerPosition, 0.05f, range))
         {
-            addition = new Vector3(0, 1f, 0);
+            attackDirection = new Vector3(0, 1f, 0);
         }
         else if (IsBelow(playerPosition, 0.05f, range))
         {
-            addition = new Vector3(0, -1f, 0);
+            attackDirection = new Vector3(0, -1f, 0);
         }
         else if (IsRight(playerPosition, 0.05f, range))
         {
-            addition = new Vector3(1f, 0, 0);
+            attackDirection = new Vector3(1f, 0, 0);
         }
         else if (IsLeft(playerPosition, 0.05f, range))
         {
-            addition = new Vector3(-1f, 0, 0);
+            attackDirection = new Vector3(-1f, 0, 0);
         }
 
-        Debug.Log("SPITTER: Addition " + addition);
+        Debug.Log("SPITTER: attack direction " + attackDirection);
 
         //else
         //{
@@ -55,7 +56,7 @@ public class SpitterController : MonsterController
         //    addition = choices[index];
         //}
 
-        if (addition == Vector3.zero)
+        if (attackDirection == Vector3.zero)
         {
             return;
         }
@@ -65,12 +66,15 @@ public class SpitterController : MonsterController
         bool playerReached = false;
         for (int i = 0; i < range; i++)
         {
-            position += addition;
+            position += attackDirection;
 
-            if (IsBlocked(position) || !TilemapExtensions.IsCellEmpty(pathfindingTilemap, position))
+            Debug.Log("Position: " + position);
+
+            if (!TilemapExtensions.IsCellEmpty(pathfindingTilemap, position))
             {
                 if (!playerReached)
                 {
+                    Debug.Log("SPITTER: Clearing ray because player not reached.");
                     attackPositions.Clear();
                 }
 
@@ -100,6 +104,7 @@ public class SpitterController : MonsterController
     {
         if (attackedTiles.Count > 0)
         {
+            //FaceVector(attackDirection);
             animator.SetTrigger("Attack");
             return true;
         }
@@ -117,12 +122,12 @@ public class SpitterController : MonsterController
         attackedTiles = new List<Vector3Int>();
     }
 
-    protected void Move()
+    protected override void Move()
     {
         lastPosition = transform.position;
     }
 
-    protected void Update()
+    protected new void Update()
     {
         if (isMyTurn)
         {
@@ -145,5 +150,18 @@ public class SpitterController : MonsterController
     protected override void _OnDamage()
     {
         MusicManager.Instance.Play("SpitterAttack");
+    }
+
+    protected override void _OnAnimationEvent(string name)
+    {
+        switch (name)
+        {
+            case "RayOpen":
+                break;
+            case "RayClose":
+                break;
+            default:
+                break;
+        }
     }
 }

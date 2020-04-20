@@ -22,27 +22,31 @@ public class TankController : MonsterController
 
         Vector3 playerPosition = player.transform.position;
         List<Vector3> attackPositions = new List<Vector3>();
-        // First check around the positions 
+        attackDirection = Vector3.zero;
         if (IsAbove(playerPosition, 0.05f, 1.05f))
         {
+            attackDirection = new Vector3(0, 1f, 0);
             attackPositions.Add(transform.position + new Vector3(0, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, 1f, 0));
         }
         else if (IsBelow(playerPosition, 0.05f, 1.05f))
         {
+            attackDirection = new Vector3(0, -1f, 0);
             attackPositions.Add(transform.position + new Vector3(0, -1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, -1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, -1f, 0));
         }
         else if (IsRight(playerPosition, 0.05f, 1.05f))
         {
+            attackDirection = new Vector3(1f, 0f, 0);
             attackPositions.Add(transform.position + new Vector3(1f, 0f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, -1f, 0));
         }
         else if (IsLeft(playerPosition, 0.05f, 1.05f))
         {
+            attackDirection = new Vector3(-1f, 0f, 0);
             attackPositions.Add(transform.position + new Vector3(-1f, 0f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, -1f, 0));
@@ -50,30 +54,32 @@ public class TankController : MonsterController
         // Then check the rest, starting with right/left
         else if (IsRight(playerPosition, 1.05f, 1.05f))
         {
+            attackDirection = new Vector3(1f, 0f, 0);
             attackPositions.Add(transform.position + new Vector3(1f, 0f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, -1f, 0));
         }
         else if (IsLeft(playerPosition, 1.05f, 1.05f))
         {
+            attackDirection = new Vector3(-1f, 0f, 0);
             attackPositions.Add(transform.position + new Vector3(-1f, 0f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, -1f, 0));
         }
         else if (IsAbove(playerPosition, 1.05f, 1.05f))
         {
+            attackDirection = new Vector3(0, 1f, 0);
             attackPositions.Add(transform.position + new Vector3(0, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, 1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, 1f, 0));
         }
         else if (IsBelow(playerPosition, 1.05f, 1.05f))
         {
+            attackDirection = new Vector3(0, -1f, 0);
             attackPositions.Add(transform.position + new Vector3(0, -1f, 0));
             attackPositions.Add(transform.position + new Vector3(1f, -1f, 0));
             attackPositions.Add(transform.position + new Vector3(-1f, -1f, 0));
         }
-
-
         else
         {
             Debug.LogError("Didn't find player around me but I should be close enough!");
@@ -95,7 +101,24 @@ public class TankController : MonsterController
     {
         if (attackedTiles.Count > 0)
         {
-            animator.SetTrigger("Attack");
+            FaceVector(attackDirection);
+
+            if (attackDirection.y == 0)
+            {
+                animator.SetTrigger("Attack");
+            }
+            else
+            {
+                if (attackDirection.y > 0)
+                {
+                    animator.SetTrigger("AttackUp");
+                }
+                else
+                {
+                    animator.SetTrigger("AttackDown");
+                }
+            }
+
             return true;
         }
 
@@ -126,5 +149,15 @@ public class TankController : MonsterController
     protected override void _OnDamage()
     {
         MusicManager.Instance.Play("TankAttack");
+    }
+
+    protected override void _OnAnimationEvent(string name)
+    {
+        switch (name)
+        {
+            default:
+
+                break;
+        }
     }
 }

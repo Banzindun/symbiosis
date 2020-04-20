@@ -21,25 +21,22 @@ public class SoldierController : MonsterController
 
         Vector3 playerPosition = player.transform.position;
         Vector3 attackPosition;
+        attackDirection = Vector3.zero;
         if (IsAbove(playerPosition, 0.05f, 1.05f))
         {
-            Debug.Log("Above!");
-            attackPosition = transform.position + new Vector3(0, 1f, 0);
+            attackDirection = new Vector3(0, 1f, 0);
         }
         else if (IsBelow(playerPosition, 0.05f, 1.05f))
         {
-            Debug.Log("Below!");
-            attackPosition = transform.position + new Vector3(0, -1f, 0);
+            attackDirection = new Vector3(0, -1f, 0);
         }
         else if (IsRight(playerPosition, 0.05f, 1.05f))
         {
-            Debug.Log("Right!");
-            attackPosition = transform.position + new Vector3(1f, 0, 0);
+            attackDirection = new Vector3(1f, 0, 0);
         }
         else if (IsLeft(playerPosition, 0.05f, 1.05f))
         {
-            Debug.Log("Left!");
-            attackPosition = transform.position + new Vector3(-1f, 0, 0);
+            attackDirection = new Vector3(-1f, 0, 0);
         }
         else
         {
@@ -47,9 +44,9 @@ public class SoldierController : MonsterController
             return;
         }
 
-        Debug.Log("Attacking " + attackPosition);
+        attackPosition = transform.position + attackDirection;
+
         tilePosition = groundTilemap.WorldToCell(attackPosition);
-        Debug.Log("Attacking tile " + tilePosition);
         groundTilemap.SetTileFlags(tilePosition, TileFlags.None);
         groundTilemap.SetColor(tilePosition, attackColor);
         GameManager.Instance.AddAttackedTile(tilePosition);
@@ -59,7 +56,24 @@ public class SoldierController : MonsterController
     {
         if (tilePosition.x != -1000)
         {
-            animator.SetTrigger("Attack");
+            FaceVector(attackDirection);
+
+            if (attackDirection.y == 0)
+            {
+                animator.SetTrigger("Attack");
+            }
+            else
+            {
+                if (attackDirection.y > 0)
+                {
+                    animator.SetTrigger("AttackUp");
+                }
+                else
+                {
+                    animator.SetTrigger("AttackDown");
+                }
+            }
+
             return true;
         }
 
@@ -90,5 +104,15 @@ public class SoldierController : MonsterController
     protected override void _OnDamage()
     {
         MusicManager.Instance.Play("SoldierAttack");
+    }
+
+    protected override void _OnAnimationEvent(string name)
+    {
+        switch (name)
+        {
+            default:
+
+                break;
+        }
     }
 }

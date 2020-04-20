@@ -109,6 +109,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        Debug.Log("STARTING GAME");
+
         currentLevelIndex = 0;
 
         mainMenu.SetActive(false);
@@ -128,8 +130,9 @@ public class GameManager : MonoBehaviour
 
     public void OnIntroFinished()
     {
-        StartTurn();
+        Debug.Log("INTRO FINISHED");
         Unpause();
+        StartTurn();
     }
 
     public void ToggleUI()
@@ -154,6 +157,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Debug.Log("RESTARTING GAME");
         loading = true;
         SceneManager.LoadScene("GameScene");
     }
@@ -230,7 +234,7 @@ public class GameManager : MonoBehaviour
 
     public void StartTurn()
     {
-        Debug.Log("Starting turn!");
+        Debug.Log("STARTING TURN!");
 
         state = GameState.OTHER;
 
@@ -249,7 +253,7 @@ public class GameManager : MonoBehaviour
 
     public void StartPlayerTurn()
     {
-        Debug.Log("Starting player turn!");
+        Debug.Log("STARTING PLAYER TURN!");
 
         state = GameState.PLAYER_TURN;
 
@@ -266,13 +270,13 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerTurnEnd()
     {
-        Debug.Log("Player turn ended!");
+        Debug.Log("PLAYER TURN ENDED!");
         StartEnemyTurn();
     }
 
     public void StartEnemyTurn()
     {
-        Debug.Log("Starting enemy turn!");
+        Debug.Log("ENEMY TURN ENDED!");
 
         handledEnemyIndex = 0;
         state = GameState.ENEMY_ATTACK;

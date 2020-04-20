@@ -17,8 +17,9 @@ public class IntroManager : MonoBehaviour
 
     public void NextScreen()
     {
-        if (screenIndex > screens.Length)
+        if (screenIndex >= screens.Length)
         {
+            gameObject.SetActive(false);
             Skip();
             return;
         }

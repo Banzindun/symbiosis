@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2365630435230389972}
   m_Layer: 9
   m_Name: Tank
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,6 @@ MonoBehaviour:
   attackColor: {r: 0.754717, g: 0.20291919, b: 0.20291919, a: 1}
   moves: 2
   currentMove: 0
-  Nutrition: 0.05
   Heal: 0.2
   inAir: 0
 --- !u!61 &1915043365

@@ -28,12 +28,13 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     protected CustomMonoBehaviour player;
     protected BoxCollider2D collider2D;
+    protected Vector3 attackDirection;
 
     private Health health;
 
     protected bool isMyTurn;
+    protected bool moveDone;
 
-    public float Nutrition;
     public float Heal;
 
     [SerializeField] private bool inAir;
@@ -59,24 +60,17 @@ public abstract class MonsterController : CustomMonoBehaviour
     public override void OnEnemyAttack()
     {
         isMyTurn = true;
-
         bool actionPrepared = PrepareAction();
-
-        // TODO: Remove when attack animation ready
-        actionPrepared = false;
 
         if (!actionPrepared)
         {
-            // TODO: Remove when attack animation ready
-            PerformAction();
-
-            isMyTurn = false;
-            GameManager.Instance.OnEnemyTurnEnd();
+            EndTurn();
         }
     }
 
     public override void OnEnemyMove()
     {
+        moveDone = false;
         currentMove = moves;
         isMyTurn = true;
         Move();
@@ -113,9 +107,14 @@ public abstract class MonsterController : CustomMonoBehaviour
             transform.position = Vector3.Lerp(lastPosition, nextPosition, currentTime);
         }
 
+        if (!isMyTurn || GameManager.Instance.state != GameManager.GameState.ENEMY_MOVE)
+        {
+            return;
+        }
+
         //transform.position = Vector3.MoveTowards(transform.position, movementPoint.position, moveSpeed * Time.deltaTime);
 
-        if (isMyTurn)
+        if (isMyTurn && !moveDone)
         {
             if (Vector3.Distance(transform.position, nextPosition) < 0.05f)
             {
@@ -130,6 +129,7 @@ public abstract class MonsterController : CustomMonoBehaviour
         {
             ScheduleAction();
             EndTurn();
+            moveDone = true;
         }
         else
         {
@@ -172,7 +172,7 @@ public abstract class MonsterController : CustomMonoBehaviour
         transform.eulerAngles = angle;
     }
 
-    protected void Move()
+    protected virtual void Move()
     {
         nextPosition = DoPathfinding(nextPosition);
         currentMove--;
@@ -417,6 +417,21 @@ public abstract class MonsterController : CustomMonoBehaviour
         }
     }
 
+    protected void FaceVector(Vector3 position)
+    {
+        Vector3 angle = transform.eulerAngles;
+        if (position.x < 0)
+        {
+            angle.y = 0;
+        }
+        else if (position.x > 0)
+        {
+            angle.y = 180;
+        }
+
+        transform.eulerAngles = angle;
+    }
+
     public void OnDeath()
     {
         animator.SetTrigger("Die");
@@ -438,27 +453,41 @@ public abstract class MonsterController : CustomMonoBehaviour
 
     protected void EndTurn()
     {
-        isMyTurn = false;
-        GameManager.Instance.OnEnemyTurnEnd();
+        if (isMyTurn)
+        {
+            isMyTurn = false;
+            GameManager.Instance.OnEnemyTurnEnd();
+        }
     }
 
     public override void OnAnimationEvent(string name)
     {
+        bool handled = true;
         switch (name)
         {
             case "Died":
                 HandleDeath();
                 break;
             case "Hit":
-                // TODO: Call perform action on the monster
+                PerformAction();
                 break;
             case "ActionDone":
-                PerformAction();
                 EndTurn();
                 break;
             case "Air":
                 inAir = true;
                 break;
+            default:
+                handled = false;
+                break;
+        }
+
+        if (!handled)
+        {
+            _OnAnimationEvent(name);
         }
     }
+
+    protected abstract void _OnAnimationEvent(string name);
 }
+
