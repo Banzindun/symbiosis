@@ -70,6 +70,7 @@ public class PlayerController : CustomMonoBehaviour
 
     private bool performingAction = false;
 
+    [SerializeField]
     private int eatenEnemies;
 
     // Start is called before the first frame update
@@ -672,5 +673,10 @@ public class PlayerController : CustomMonoBehaviour
                 }
                 break;
         }
+    }
+
+    public bool HasWon()
+    {
+        return eatenEnemies >= eatenEnemiesToWinGame;
     }
 }

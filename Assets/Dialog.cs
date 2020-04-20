@@ -4,6 +4,8 @@ using UnityEngine;
 public class Dialog : ScriptableObject
 {
     public ActorType actor;
+
+    [TextArea]
     public string text;
     public Dialog nextDialog;
 }

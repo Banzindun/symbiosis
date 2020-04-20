@@ -16,6 +16,9 @@ public class DialogManager : MonoBehaviour
 
     [SerializeField] private Animator imageAnimator;
 
+    private bool isLastDialog = false;
+    [SerializeField] private GameObject lastScreen;
+
     private void Awake()
     {
         instance = this;
@@ -53,6 +56,7 @@ public class DialogManager : MonoBehaviour
 
         if (dialog == null)
         {
+
             EndDialog();
             return;
         }
@@ -60,9 +64,27 @@ public class DialogManager : MonoBehaviour
         DisplayDialog();
     }
 
-    public void EndDialog()
+    public void EndLastDialog()
     {
         gameObject.SetActive(false);
+        lastScreen.SetActive(true);
+    }
+
+    public void EndDialog()
+    {
+
+        if (isLastDialog)
+        {
+            EndLastDialog();
+            return;
+        }
+        gameObject.SetActive(false);
         GameManager.Instance.Unpause();
+    }
+
+    public void StartEndDialog(Dialog dialog)
+    {
+        StartDialog(dialog);
+        isLastDialog = true;
     }
 }

@@ -137,6 +137,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("INTRO FINISHED");
         Unpause();
         StartTurn();
+
+        dialogManager.StartDialog(this.startDialog);
     }
 
     public void ToggleUI()
@@ -384,5 +386,10 @@ public class GameManager : MonoBehaviour
     {
         Pause();
         gameOver.SetActive(true);
+    }
+
+    public void OnPlayerWon()
+    {
+        dialogManager.StartEndDialog(endDialog);
     }
 }
