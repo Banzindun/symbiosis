@@ -633,6 +633,14 @@ public class PlayerController : CustomMonoBehaviour
                 EndTurn();
                 return;
             }
+            else
+            {
+                Debug.LogError("No enemy controller found during feed!!");
+            }
+        }
+        else
+        {
+            Debug.LogError("No enemy collider found during feed!!");
         }
 
         Debug.LogError("Somehow tried to consume enemy that wasn't there (no collider or enemyController found under the player)!");
@@ -651,12 +659,27 @@ public class PlayerController : CustomMonoBehaviour
                     MusicManager.Instance.Play("PlayerAttack");
 
                     Vector3 strikePosition = transform.position + actionDirection;
-                    Health enemyHealth = Utils.GetComponentAtPosition2D<Health>(strikePosition);
 
-                    if (enemyHealth != null)
+                    Collider2D collider = Physics2D.OverlapCircle(transform.position + actionDirection, .2f, this.collisionLayers);
+                    if (collider != null)
                     {
-                        enemyHealth.CurrentValue -= attackDamage;
+                        Health enemyHealth = collider.GetComponent<Health>();
+
+                        if (enemyHealth != null)
+                        {
+                            enemyHealth.CurrentValue -= attackDamage;
+                        }
+                        else
+                        {
+                            Debug.LogError("Now health found on the enemy!");
+                        }
                     }
+                    else
+                    {
+                        Debug.LogError("Now collider found!");
+                    }
+
+
                 }
                 break;
             case "AttackDone":

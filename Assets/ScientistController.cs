@@ -43,7 +43,22 @@ public class ScientistController : MonsterController
 
     protected override void _OnDeath()
     {
+        Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
+        pathfindingTilemap.SetTile(tile, null);
+
+        tile = pathfindingTilemap.WorldToCell(transform.position);
+        pathfindingTilemap.SetTile(tile, null);
+
         gameObject.layer = 0;
+
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        collider.size = new Vector2(0.5f, 0.5f);
+
+        //collider2D.enabled = false;
+        if (isMyTurn)
+        {
+            EndTurn();
+        }
     }
 
     protected override void _OnDamage()

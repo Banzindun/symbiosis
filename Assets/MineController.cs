@@ -8,6 +8,7 @@ public class MineController : CustomMonoBehaviour
     [SerializeField] private Vector3[] strike;
     [SerializeField] private Animator animator;
     [SerializeField] private int damage;
+    [SerializeField] private LayerMask strikeLayers;
 
     public override void OnTurnStart() { }
     public override void OnPlayerTurn() { }
@@ -42,11 +43,25 @@ public class MineController : CustomMonoBehaviour
             for (int i = 0; i < strike.Length; i++)
             {
                 Vector3 strikePosition = transform.position + strike[i];
-                Health enemyHealth = Utils.GetComponentAtPosition2D<Health>(strikePosition);
 
-                if (enemyHealth != null)
+                Collider2D collider = Physics2D.OverlapCircle(strikePosition, .2f, strikeLayers);
+                if (collider != null)
                 {
-                    enemyHealth.CurrentValue -= damage;
+                    Health enemyHealth = collider.GetComponent<Health>();
+
+                    if (enemyHealth != null)
+                    {
+                        enemyHealth.CurrentValue -= damage;
+                    }
+                    else
+                    {
+                        PlayerHealth playerHealth = collider.GetComponent<PlayerHealth>();
+
+                        if (playerHealth != null)
+                        {
+                            playerHealth.CurrentValue -= 0.15f;
+                        }
+                    }
                 }
             }
         }

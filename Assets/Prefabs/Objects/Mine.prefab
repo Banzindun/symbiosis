@@ -53,6 +53,9 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   animator: {fileID: 4931420621703461468}
   damage: 1
+  strikeLayers:
+    serializedVersion: 2
+    m_Bits: 1536
 --- !u!61 &8086512291289898474
 BoxCollider2D:
   m_ObjectHideFlags: 0

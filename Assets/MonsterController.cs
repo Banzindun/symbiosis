@@ -44,6 +44,9 @@ public abstract class MonsterController : CustomMonoBehaviour
         Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
         pathfindingTilemap.SetTile(tile, null);
 
+        tile = pathfindingTilemap.WorldToCell(transform.position);
+        pathfindingTilemap.SetTile(tile, null);
+
         GameManager.Instance.RemoveEnemy(this);
     }
 
@@ -400,12 +403,16 @@ public abstract class MonsterController : CustomMonoBehaviour
 
         Vector3 worldPosition = groundTilemap.GetCellCenterLocal(tile);//groundTilemap.CellToWorld(tile));
         Debug.Log("Looking for player health on tile " + worldPosition);
-        PlayerHealth playerHealth = Utils.GetComponentAtPosition2D<PlayerHealth>(worldPosition);
-
-        if (playerHealth != null)
+        Collider2D collider = Physics2D.OverlapCircle(worldPosition, .2f, this.collisionLayers);
+        if (collider != null)
         {
-            playerHealth.CurrentValue -= damage;
-            _OnDamage();
+            PlayerHealth playerHealth = collider.GetComponent<PlayerHealth>();
+
+            if (playerHealth != null)
+            {
+                playerHealth.CurrentValue -= damage;
+                _OnDamage();
+            }
         }
     }
 
@@ -439,12 +446,20 @@ public abstract class MonsterController : CustomMonoBehaviour
     {
         animator.SetTrigger("Die");
         enabled = false;
+
+        Vector3 euler = transform.eulerAngles;
+        euler.y = 0;
+        transform.eulerAngles = euler;
+
         _OnDeath();
     }
 
     protected void HandleDeath()
     {
         Vector3Int tile = pathfindingTilemap.WorldToCell(lastPosition);
+        pathfindingTilemap.SetTile(tile, null);
+
+        tile = pathfindingTilemap.WorldToCell(transform.position);
         pathfindingTilemap.SetTile(tile, null);
 
         gameObject.layer = 0;
