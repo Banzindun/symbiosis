@@ -48,6 +48,7 @@ public class PlayerController : CustomMonoBehaviour
     [SerializeField] private Image feastIndicator;
     [SerializeField] private TextMeshProUGUI feastValue;
     [SerializeField] private TextMeshProUGUI stepsText;
+    [SerializeField] private TextMeshProUGUI tooltip;
 
     [SerializeField] private Button wButton;
     [SerializeField] private Button sButton;
@@ -435,6 +436,11 @@ public class PlayerController : CustomMonoBehaviour
             performedAction = ActionType.BOMB;
         }
 
+        if (performedAction != ActionType.NONE)
+        {
+            tooltip.text = "Select direction for the action";
+        }
+
         // TODO: Show the tooltip 
         ShowDirectionSelectionTooltip();
     }
@@ -552,6 +558,7 @@ public class PlayerController : CustomMonoBehaviour
 
     private bool PerformAction()
     {
+        tooltip.text = "";
 
         if (performedAction == ActionType.ATTACK)
         {

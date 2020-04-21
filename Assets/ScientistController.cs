@@ -43,7 +43,7 @@ public class ScientistController : MonsterController
 
     protected override void _OnDeath()
     {
-        MusicManager.Instance.Play("SpitterDeath");
+        gameObject.layer = 0;
     }
 
     protected override void _OnDamage()

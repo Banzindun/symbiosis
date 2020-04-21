@@ -89,6 +89,8 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        //Screen.SetResolution(512 * 2, 384 * 2, false);
+
         if (instance == null)
         {
             instance = this;
@@ -190,7 +192,7 @@ public class GameManager : MonoBehaviour
 
         if (!mainMenu.active && !dialog.active)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape))
             {
                 TogglePause();
             }
@@ -375,6 +377,7 @@ public class GameManager : MonoBehaviour
         {
             if (enemy.enabled)
             {
+
                 enemy.OnTurnEnd();
             }
         }

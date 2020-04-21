@@ -3190,7 +3190,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 254840729}
-  - component: {fileID: 254840730}
   - component: {fileID: 254840732}
   - component: {fileID: 254840731}
   m_Layer: 5
@@ -3221,20 +3220,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 512, y: 384}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &254840730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254840728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba93de5089eadd948a1d75b561c4a35d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioMixer: {fileID: 24100000, guid: b30da70abfaf2f1468cafd149829bb32, type: 2}
-  musicSlider: {fileID: 0}
 --- !u!114 &254840731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5696,9 +5681,9 @@ MonoBehaviour:
   m_RefResolutionY: 384
   m_UpscaleRT: 0
   m_PixelSnapping: 1
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
+  m_CropFrameX: 1
+  m_CropFrameY: 1
+  m_StretchFill: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -11291,7 +11276,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2a672b0f824dbc445bec7f2f23e3e607, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f9ba52892338c4e4ab87ab3ca94232af, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -25494,6 +25479,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5129029679761536940 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8528533624647462975, guid: d6eaff6a4bbfb3f4aaf365ca1a5172f4,
+    type: 3}
+  m_PrefabInstance: {fileID: 6487533329000312236}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2759e536b852b6f40ae82072e90558d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5129029679761536950 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2100261140231428634, guid: d6eaff6a4bbfb3f4aaf365ca1a5172f4,
@@ -37859,6 +37856,7 @@ MonoBehaviour:
   feastIndicator: {fileID: 1294541593}
   feastValue: {fileID: 481607237}
   stepsText: {fileID: 577905299}
+  tooltip: {fileID: 2009135927}
   wButton: {fileID: 1615455304}
   sButton: {fileID: 972024123}
   aButton: {fileID: 843161464}
@@ -46022,6 +46020,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3296007104144904331, guid: d6eaff6a4bbfb3f4aaf365ca1a5172f4,
+        type: 3}
+      propertyPath: owner
+      value: 
+      objectReference: {fileID: 5129029679761536940}
     - target: {fileID: 8528533624647462975, guid: d6eaff6a4bbfb3f4aaf365ca1a5172f4,
         type: 3}
       propertyPath: pathfindingTilemap
