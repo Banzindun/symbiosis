@@ -333,6 +333,11 @@ public class GameManager : MonoBehaviour
     {
         handledEnemyIndex++;
 
+        if (handledEnemyIndex >= enemyBehaviours.Count)
+        {
+            handledEnemyIndex = enemyBehaviours.Count;
+        }
+
         if (handledEnemyIndex == enemyBehaviours.Count)
         {
             if (state == GameState.ENEMY_ATTACK)

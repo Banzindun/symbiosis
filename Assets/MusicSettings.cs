@@ -15,9 +15,8 @@ public class MusicSettings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioMixer.SetFloat("MusicVolume", -60f);
-        musicSlider.value = 60f / 80f;
-
+        audioMixer.SetFloat("MusicVolume", 0);
+        musicSlider.value = 1;
     }
 
     public void ToggleMusic()

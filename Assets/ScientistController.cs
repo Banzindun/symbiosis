@@ -36,7 +36,6 @@ public class ScientistController : MonsterController
     {
         if (isMyTurn)
         {
-            MoveDone();
             EndTurn();
         }
     }
