@@ -1,4 +1,10 @@
-Resources:
+Game made during Ludum Dare 46
+https://ldjam.com/events/ludum-dare/46/symbiosis
+https://banzi.itch.io/symbiosis
+
+::Resources::
+
+Font:
 https://assetstore.unity.com/packages/2d/fonts/free-pixel-font-thaleah-140059
 
 Sound icons:
